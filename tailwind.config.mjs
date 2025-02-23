@@ -9,6 +9,19 @@ export default {
   theme: {
   	extend: {
   		colors: {
+			dark:{
+				1: '#1C1F2E',
+				2: '#161925',
+				3: '#080036',
+			},
+			blue:{
+				1: '#0E78F9',
+			},
+			custom: {
+				'gradient-start': '#080036',
+				'gradient-end': '#0d0056',
+			},
+			
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
