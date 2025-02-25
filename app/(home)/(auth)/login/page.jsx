@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 
 export default function Login() {
@@ -12,11 +14,13 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   // login function logic here
   const handleSubmit = async (e) => {
     e.preventDefault();
     let error = false;
+    
     // validation
     if (!email) {
       setEmailError('Email is required');
@@ -35,25 +39,35 @@ export default function Login() {
     }
     if (error) return;
 
-    // sending data to the server 
+    
     setError(false); // Reset error before request
     setIsLoading(true);
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
 
-      console.log(response);
-      if (!response.ok) throw new Error("Invalid credentials");
-
-      const data = await response.json();
-      console.log("Login Successful:", data);
-    } catch (err) {
+    // sending data to the server to authenticate
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    setIsLoading(false);
+    
+    if (res.error) {
       setError(true);
-    } finally {
-      setIsLoading(false);
+      return;
+    }
+
+    // Redirect user based on role
+    const sessionRes = await fetch("/api/auth/session");
+    const session = await sessionRes.json();
+
+    if (session?.user?.user.role === 1) {
+      router.push("/student");
+    } else if (session?.user?.user.role === 2) {
+      router.push("/instructor");
+    } else if (session?.user?.user.role === 3) {
+      router.push("/admin");
+    } else {
+      router.push("/"); 
     }
 
   };
@@ -69,9 +83,10 @@ export default function Login() {
             <h1 className="text-white text-3xl font-bold text-center">Welcome Back</h1>
             <p className="text-blue-200 text-center mt-2">Please sign in to continue</p>
           </div>
-          {error && <span className="text-red-600 text-sm cursor-pointer">*Invalid Credentials</span>}
-          {isLoading && <span className="text-blue-600 text-sm cursor-pointer">Loading...</span>}
+          
           <form onSubmit={handleSubmit} className="p-8 pt-16 space-y-6">
+          {error && <div className="text-red-600 text-md font-medium text-center cursor-pointer">Invalid Credentials</div>}
+          {isLoading && <div className="text-blue-600 text-md text-center cursor-pointer">Loading...</div>}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 Email Address
@@ -81,6 +96,7 @@ export default function Login() {
                 <input
                   id="email"
                   type="email"
+                  autoComplete='username'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
@@ -113,6 +129,7 @@ export default function Login() {
                 <input
                   id="password"
                   type="password"
+                  autoComplete='current-password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={cn(
