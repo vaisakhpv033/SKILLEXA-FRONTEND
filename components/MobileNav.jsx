@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/sheet"
 import Image from 'next/image'
 import Link from 'next/link'
-import { navbarLinks } from '@/constants'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { signOut } from 'next-auth/react';
 
 
-const MobileNav = () => {
+const MobileNav = ({navbarLinks, role}) => {
     const pathname = usePathname();
     return (
         <section className="w-full max-w-[264px]">
@@ -62,6 +62,11 @@ const MobileNav = () => {
                                             </SheetClose>
                                         )
                                     })}
+                                    {role && (
+                                    <SheetClose asChild>
+                                    <button className="flex gap-4 items-center p-4 rounded-lg font-semibold w-full max-w-60" onClick={() => signOut({ callbackUrl: "/login" })}>Logout</button> 
+                                    </SheetClose>
+                                    )}
 
                                 </section>
                             </SheetClose>
