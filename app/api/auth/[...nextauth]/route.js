@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import jwt, { decode } from "jsonwebtoken";
+import GoogleProvider from "next-auth/providers/google";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
@@ -13,7 +14,6 @@ async function refreshAccessToken(token) {
       });
       
       const decodedToken = jwt.decode(response.data.access);
-      
       return {
         ...token,
         accessToken: response.data.access,
@@ -67,6 +67,39 @@ export const authOptions = {
         }
       },
     }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+
+      async profile(profile, account) {
+        const { email, name, sub } = profile;
+        const idToken = account.id_token;
+        console.log("sending the request")
+        // Send user data to Django backend to create user & get JWT tokens
+        const response = await axios.post(`${API_BASE_URL}/accounts/google-login/`, {
+          email,
+          name,
+          idToken,
+        });
+
+        const { access, refresh } = response.data;
+        const decodedToken = jwt.decode(access);
+        console.log(response.data)
+        return {
+          id: sub,
+          accessToken: access,
+          refreshToken: refresh,
+          accessTokenExpires: decodedToken.exp * 1000,
+          user: {
+            username: decodedToken.username,
+            role: decodedToken.role,
+          },
+        };
+      },
+
+
+    }),
   ],
   callbacks: {
     async jwt({ token, user }) {
@@ -98,7 +131,7 @@ export const authOptions = {
     },
 
 
-    async redirect({ url, baseUrl }) {
+    async redirect({ url, baseUrl}) {
       // Get user role from session
       const role = url?.includes("student")
         ? "student"

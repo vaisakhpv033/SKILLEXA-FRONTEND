@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/sheet"
 import Image from 'next/image'
 import Link from 'next/link'
+import { sidebarLinks } from '@/constants'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { signOut } from 'next-auth/react';
 
 
-const MobileNav = ({navbarLinks, role}) => {
+const InstructorMobileNav = () => {
     const pathname = usePathname();
     return (
         <section className="w-full max-w-[264px]">
@@ -27,7 +27,7 @@ const MobileNav = ({navbarLinks, role}) => {
                         width={36}
                         height={36}
                         alt="hamburger icon"
-                        className="cursor-pointer lg:hidden"
+                        className="cursor-pointer sm:hidden"
                     />
                 </SheetTrigger>
                 <SheetContent side="left" className="border-none bg-dark-1">
@@ -35,13 +35,6 @@ const MobileNav = ({navbarLinks, role}) => {
                     <SheetTitle>
                     
                     <Link href='/' className='flex items-center gap-1'>
-                        <Image
-                            src='/icons/icon.png'
-                            alt='Voom logo'
-                            width={26}
-                            height={26}
-                            className='max-sm:size-0'
-                        />
                         <p className='text-white text-[26px] font-extrabold'>SKILLEXA</p>
                     </Link>
                     </SheetTitle>
@@ -51,29 +44,25 @@ const MobileNav = ({navbarLinks, role}) => {
                             <SheetClose asChild>
                                 <section className='flex h-full flex-col gap-6 pt-16 text-white'>
 
-                                    {navbarLinks.map((link) => {
-                                        const isActive = pathname === link.route || (pathname.startsWith(link.route) && link.route !== '/');
+                                    {sidebarLinks.map((link) => {
+                                        const  isActive = pathname === link.route || (pathname.startsWith(link.route) && link.route !== '/instructor');
                                         return (
-                                            <SheetClose key={link.title} asChild>
+                                            <SheetClose key={link.label} asChild>
                                             <Link href={link.route}  className={
                                                 cn(
                                                     'flex gap-4 items-center p-4 rounded-lg w-full max-w-60', 
-                                                    {'text-[#00FFF0]': isActive,}
+                                                    {'bg-blue-1': isActive,}
                                                 )
                                             }>
+                                            <Image src ={link.imgUrl} alt={link.label} width={20} height={20}/>
                                                 <p className='font-semibold'>
-                                                    {link.title}
+                                                    {link.label}
                                                 </p>
 
                                             </Link>
                                             </SheetClose>
                                         )
                                     })}
-                                    {role && (
-                                    <SheetClose asChild>
-                                    <button className="flex gap-4 items-center p-4 rounded-lg font-semibold w-full max-w-60" onClick={() => signOut({ callbackUrl: "/login" })}>Logout</button> 
-                                    </SheetClose>
-                                    )}
 
                                 </section>
                             </SheetClose>
@@ -87,4 +76,4 @@ const MobileNav = ({navbarLinks, role}) => {
     )
 }
 
-export default MobileNav
+export default InstructorMobileNav
