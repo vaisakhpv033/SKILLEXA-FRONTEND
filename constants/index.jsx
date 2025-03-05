@@ -62,3 +62,36 @@ export const instructorNavbarLinks = [
         imgUrl: '/icons/profile.svg',
     },
 ]
+
+
+export const sidebarLinks = [
+    {
+        label: 'Home',
+        route: '/instructor',
+        imgUrl: '/icons/Home.svg',
+    },
+
+    {
+        label: 'Create Course',
+        route: '/instructor/course/create',
+        imgUrl: '/icons/add-personal.svg',
+    },
+
+    {
+        label: 'My Courses',
+        route: '/instructor/course',
+        imgUrl: '/icons/upcoming.svg',
+    },
+
+    {
+        label: 'Wallet',
+        route: '/instructor/wallet',
+        imgUrl: '/icons/wallet.svg',
+    },
+
+    {
+        label: 'Settings',
+        route: '/instructor/settings',
+        imgUrl: '/icons/settings.svg',
+    }
+ ]

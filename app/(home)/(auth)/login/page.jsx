@@ -1,10 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 
 export default function Login() {
@@ -12,8 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   // login function logic here
@@ -39,9 +39,7 @@ export default function Login() {
     }
     if (error) return;
 
-    
-    setError(false); // Reset error before request
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     // sending data to the server to authenticate
     const res = await signIn("credentials", {
@@ -49,13 +47,13 @@ export default function Login() {
       password,
       redirect: false,
     });
-    setIsLoading(false);
+    setIsSubmitting(false);
     
     if (res.error) {
-      setError(true);
+      toast.error("Invalid Credentials")
       return;
     }
-
+    toast.success("Login successfull")
     // Redirect user based on role
     const sessionRes = await fetch("/api/auth/session");
     const session = await sessionRes.json();
@@ -85,8 +83,6 @@ export default function Login() {
           </div>
           
           <form onSubmit={handleSubmit} className="p-8 pt-16 space-y-6">
-          {error && <div className="text-red-600 text-md font-medium text-center cursor-pointer">Invalid Credentials</div>}
-          {isLoading && <div className="text-blue-600 text-md text-center cursor-pointer">Loading...</div>}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 Email Address
@@ -147,6 +143,7 @@ export default function Login() {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className={cn(
                 "w-full py-3 px-4 rounded-lg",
                 "skillexa-gradient",
@@ -158,8 +155,10 @@ export default function Login() {
                 "dark:focus:ring-offset-dark-card"
               )}
             >
-              Sign In
+              {isSubmitting ? <Loader2 className="mr-2 h-4 w-full animate-spin" /> : "Sign In"}
             </button>
+
+            
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -172,6 +171,8 @@ export default function Login() {
 
             <button
               type="button"
+              disabled={isSubmitting}
+              onClick={() => signIn("google")}
               className={cn(
                 "w-full py-3 px-4 rounded-lg",
                 "bg-white dark:bg-[#0f0d23]/50",
