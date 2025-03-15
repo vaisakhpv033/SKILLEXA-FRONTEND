@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import ModeToggle from './ModeToggle';
 import MobileNav from './MobileNav';
 import { signOut } from 'next-auth/react';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
 
 const Navbar = ({navbarLinks}) => {
@@ -49,7 +50,13 @@ const Navbar = ({navbarLinks}) => {
                 )
             })}
             {role && (
-            <button className="flex gap-4 items-center p-4 rounded-lg font-semibold text-lg justify-start text-white hover:text-[#00FFF0]" onClick={() => signOut({ callbackUrl: "/login" })}>Logout</button>
+            <Link href="/student/profile/">
+            <Avatar className="h-8 w-8">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            </Link>
+          
             )}
             <ModeToggle />
         </div>

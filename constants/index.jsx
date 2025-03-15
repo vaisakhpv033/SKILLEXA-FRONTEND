@@ -1,3 +1,4 @@
+import { BookOpen } from "lucide-react"
 export const navbarLinks = [
     {
         title: 'Home',
@@ -28,19 +29,9 @@ export const navbarLinks = [
 
 export const studentNavbarLinks = [
     {
-        title: 'Home',
-        route: '/student',
-        imgUrl: '/icons/Home.svg'
-    },
-    {
         title: 'My Learning',
         route: '/student/my-learning',
-        imgUrl: '/icons/courses.svg',
-    },
-    {
-        title: 'Profile',
-        route: '/student/profile',
-        imgUrl: '/icons/profile.svg',
+        imgUrl: <BookOpen />,
     },
 ]
 
