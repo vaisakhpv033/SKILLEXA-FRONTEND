@@ -16,20 +16,22 @@ export async function authMiddleware(req) {
 
     // Get the user's token
     const token = await getToken({ req });
+    //console.log("token:",token);
     const { pathname } = req.nextUrl;
+
 
     // Allow public access to landing page (`/`)
     if (pathname === "/") {
         if (!token){
             return NextResponse.next();
         }
-        if (token?.user.user.role === 1) {
+        if (token?.user?.user?.role === 1) {
             return NextResponse.redirect(new URL("/student", req.url));
         }
-        if (token?.user.user.role === 2) {
+        if (token?.user?.user?.role === 2) {
             return NextResponse.redirect(new URL("/instructor", req.url));
         }
-        if (token?.user.user.role === 3) {
+        if (token?.user?.user?.role === 3) {
             return NextResponse.redirect(new URL("/admin", req.url));
         }
     }
@@ -40,20 +42,20 @@ export async function authMiddleware(req) {
     }
 
     // If user is not logged in and tries to access a protected route, redirect to login
-    if (!token && Object.values(protectedRoutes).some((route) => pathname.startsWith(route))) {
+    if (!token?.user?.user?.role && Object.values(protectedRoutes).some((route) => pathname.startsWith(route))) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
     // Role-based route protection
-    if (pathname.startsWith(protectedRoutes.admin) && token?.user.user.role !== 3) {
+    if (pathname.startsWith(protectedRoutes.admin) && token?.user?.user?.role !== 3) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
-    if (pathname.startsWith(protectedRoutes.instructor) && token?.user.user.role !== 2) {
+    if (pathname.startsWith(protectedRoutes.instructor) && token?.user?.user?.role !== 2) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
-    if (pathname.startsWith(protectedRoutes.student) && token?.user.user.role !== 1) {
+    if (pathname.startsWith(protectedRoutes.student) && token?.user?.user?.role !== 1) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
