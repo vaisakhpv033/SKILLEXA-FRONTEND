@@ -36,7 +36,26 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    // Try to extract error message from the response
+    let errorMessage = `HTTP error! Status: ${res.status}`;
+    try {
+      const errorData = await res.json();
+      if (errorData?.error) {
+        errorMessage = errorData.error;
+      }
+    } catch (err) {
+      console.error("Error parsing response JSON:", err);
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return res.json();
+};
 
 // Form schema for category creation
 const categorySchema = z.object({
@@ -154,7 +173,11 @@ export default function CategoryList() {
       ) : (
         <div className="grid gap-4">
           {data?.results.map((category) => (
-            <CategoryItem key={category.id} category={category} />
+            category ? (
+            <CategoryItem key={category?.id} category={category} />
+            ):(
+              <span className="text-red-700">Something Went Wrong.Error Fetching Categories</span>
+            )
           ))}
         </div>
       )}
@@ -172,7 +195,7 @@ function CategoryItem({ category }) {
         <CardHeader className="p-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-md font-semibold">
-              {category.name}
+              {category?.name}
             </CardTitle>
             {hasSubcategories && (
               <CollapsibleTrigger asChild>
@@ -192,7 +215,7 @@ function CategoryItem({ category }) {
             <CardContent className="pt-0 pb-4">
               <div className="pl-6 border-l-2 border-muted ml-4 space-y-2">
                 {category.subcategories.map((sub) => (
-                  <CategoryItem key={sub.id} category={sub} />
+                  <CategoryItem key={sub?.id} category={sub} />
                 ))}
               </div>
             </CardContent>
