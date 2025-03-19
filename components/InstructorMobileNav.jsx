@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { sidebarLinks } from '@/constants'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Menu } from 'lucide-react';
 
 
 const InstructorMobileNav = () => {
@@ -22,11 +23,9 @@ const InstructorMobileNav = () => {
         <section className="w-full max-w-[264px]">
             <Sheet>
                 <SheetTrigger asChild>
-                    <Image
-                        src="/icons/hamburger.svg"
+                    <Menu
                         width={36}
                         height={36}
-                        alt="hamburger icon"
                         className="cursor-pointer sm:hidden"
                     />
                 </SheetTrigger>
@@ -45,7 +44,7 @@ const InstructorMobileNav = () => {
                                 <section className='flex h-full flex-col gap-6 pt-16 text-white'>
 
                                     {sidebarLinks.map((link) => {
-                                        const  isActive = pathname === link.route || (pathname.startsWith(link.route) && link.route !== '/instructor');
+                                        const  isActive = pathname === link.route || (pathname.startsWith(link.route) && link.route !== '/instructor' && link.route !=='/instructor/course');
                                         return (
                                             <SheetClose key={link.label} asChild>
                                             <Link href={link.route}  className={

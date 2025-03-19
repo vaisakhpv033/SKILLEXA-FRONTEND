@@ -29,6 +29,7 @@ export default function Home() {
               height={300}
               size="100vw"
               className="rounded-lg object-cover w-full h-auto"
+              priority
             />
           </div>
         </div>

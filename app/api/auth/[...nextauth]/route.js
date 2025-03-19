@@ -58,6 +58,7 @@ export const authOptions = {
             refreshToken: refresh,
             accessTokenExpires: decodedToken.exp * 1000,
             user: {
+              id: decodedToken.user_id,
               username: decodedToken.username,
               role: decodedToken.role,
             },
@@ -92,6 +93,7 @@ export const authOptions = {
           refreshToken: refresh,
           accessTokenExpires: decodedToken.exp * 1000,
           user: {
+            id: decodedToken.user_id,
             username: decodedToken.username,
             role: decodedToken.role,
           },
