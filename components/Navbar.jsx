@@ -1,26 +1,37 @@
 'use client';
 import Link from 'next/link'
 import React, {useState, useEffect} from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import ModeToggle from './ModeToggle';
 import MobileNav from './MobileNav';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import { SessionProvider } from 'next-auth/react';
 
 
 const Navbar = ({navbarLinks}) => {
-    const pathname = usePathname();
+    return (
+        <SessionProvider>
+            <NavbarContent navbarLinks={navbarLinks}/>
+        </SessionProvider>
+    )
+}
 
+
+const NavbarContent = ({navbarLinks}) => {
+    const pathname = usePathname();
+    const {data:session, status} = useSession();
+    const router = useRouter()
     const [role, setRole] = useState(null);
 
     useEffect(() => {
-        fetch("/api/user")
-        .then((res) => res.json())
-        .then((data) => setRole(data.role))
-        .catch(() => setRole(null));
-        console.log(role);
-    }, []);
+        if (status === "authenticated" && ["/login", "/courses", "/register/instructor", "/register/student"].includes(pathname)) {
+            window.location.href="/";
+          } else if (status === "unauthenticated") {
+            console.log("❌ User is not logged in");
+          }
+    }, [status]);
 
     let dashboardRoute = "/";
     if (role === 1) dashboardRoute = "/student";
