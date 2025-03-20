@@ -55,3 +55,34 @@ export async function POST(req) {
         return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
     }
 }
+
+
+/**
+ * GET: Fetch All Courses (Protected API)
+ */
+export async function GET(req) {
+    try {
+        // Step 1: Retrieve session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Step 2: Fetch courses from Django API
+        const response = await axios.get(`${API_BASE_URL}/course/courses/`, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+            },
+        });
+
+        // Step 3: Return Django API response
+        return NextResponse.json(response.data, { status: response.status });
+
+    } catch (error) {
+        console.error("Course fetching error:", error?.response?.data || error.message);
+
+        const errorMessage = error?.response?.data?.error || "Course fetching failed. Please try again later.";
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}
