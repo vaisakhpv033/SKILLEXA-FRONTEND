@@ -9,44 +9,6 @@ import Loading from "@/components/Loading";
 import ErrorComponent from "@/components/ErrorComponent";
 
 
-const courses = [
-    {
-      "id": 71,
-      "title": "DataStructures And Algorithms",
-      "subtitle": "Master Dsa with python.",
-      "description": "This course is for mastering datastructure concepts using python",
-      "thumbnail": null,
-      "trailer": null,
-      "language": "EN",
-      "level": 2,
-      "price": "499.00",
-      "status": CourseStatus.DRAFT,
-      "topic": 34,
-      "topic_name": "Python",
-      "created_at": "2025-03-19T04:26:03.874353Z",
-      "updated_at": "2025-03-19T04:26:03.875075Z",
-      "details": []
-    },
-    {
-      "id": 34,
-      "title": "Django for Beginners new",
-      "subtitle": "Learn Django step by step",
-      "description": "A complete Django course for beginners.",
-      "thumbnail": null,
-      "trailer": null,
-      "language": "EN",
-      "level": 1,
-      "price": "999.00",
-      "status": CourseStatus.PENDING,
-      "topic": 1,
-      "topic_name": "Programming",
-      "created_at": "2025-03-17T15:06:49.503763Z",
-      "updated_at": "2025-03-17T15:06:49.503775Z",
-      "details": []
-    }
-  ];
-
-
 export default function InstructorCourses() {
     const [activeTab, setActiveTab] = useState("all");
     const {course, isLoading, isError,  mutate} = useCourse("/api/instructor/course/create");
@@ -114,4 +76,46 @@ export default function InstructorCourses() {
 }
   
 
+
+
+
+
+// for refrence purpose to be deleted later
+
+// const courses = [
+//     {
+//       "id": 71,
+//       "title": "DataStructures And Algorithms",
+//       "subtitle": "Master Dsa with python.",
+//       "description": "This course is for mastering datastructure concepts using python",
+//       "thumbnail": null,
+//       "trailer": null,
+//       "language": "EN",
+//       "level": 2,
+//       "price": "499.00",
+//       "status": CourseStatus.DRAFT,
+//       "topic": 34,
+//       "topic_name": "Python",
+//       "created_at": "2025-03-19T04:26:03.874353Z",
+//       "updated_at": "2025-03-19T04:26:03.875075Z",
+//       "details": []
+//     },
+//     {
+//       "id": 34,
+//       "title": "Django for Beginners new",
+//       "subtitle": "Learn Django step by step",
+//       "description": "A complete Django course for beginners.",
+//       "thumbnail": null,
+//       "trailer": null,
+//       "language": "EN",
+//       "level": 1,
+//       "price": "999.00",
+//       "status": CourseStatus.PENDING,
+//       "topic": 1,
+//       "topic_name": "Programming",
+//       "created_at": "2025-03-17T15:06:49.503763Z",
+//       "updated_at": "2025-03-17T15:06:49.503775Z",
+//       "details": []
+//     }
+//   ];
 

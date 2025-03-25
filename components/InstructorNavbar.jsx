@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import InstructorMobileNav from './InstructorMobileNav';
-import SignOutButton from './SignOutButton';
+import { SignOutButtonProvider } from './SignOutButton';
 import ModeToggle from './ModeToggle';
 
 
@@ -14,7 +14,7 @@ const InstructorNavbar = () => {
       <div className="flex-between gap-5 max-sm:gap-2">
         {/* profile picture */}
         <ModeToggle />
-        <SignOutButton />
+        <SignOutButtonProvider />
         <InstructorMobileNav />
         
 

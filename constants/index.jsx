@@ -1,4 +1,4 @@
-import { BookOpen } from "lucide-react"
+import { BookOpen, LayoutDashboard, Settings2, Plus } from "lucide-react"
 export const navbarLinks = [
     {
         title: 'Home',
@@ -116,3 +116,8 @@ export const CourseLevels = {
     [LEVELS.ADVANCED]: "Advanced",
     [LEVELS.ALL]: "All Levels",
 };
+
+export const courseFallbackImgUrl = "/images/home-image.avif";
+
+
+

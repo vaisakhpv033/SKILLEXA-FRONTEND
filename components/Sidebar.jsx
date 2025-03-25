@@ -18,10 +18,10 @@ const Sidebar = () => {
                     <Link href={link.route} key={link.label} className={
                         cn(
                             'flex gap-2 items-center p-3 rounded-lg justify-start', 
-                            {'bg-violet-500': isActive,}
+                            {'bg-violet-500': isActive, 'text-white': isActive}
                         )
                     }>
-                    <Image src ={link.imgUrl} alt={link.label} width={20} height={20}/>
+                    <Image src ={link.imgUrl} alt={link.label} width={16} height={16}/>
                         <p className='text-md font-semibold max-lg:hidden'>
                             {link.label}
                         </p>

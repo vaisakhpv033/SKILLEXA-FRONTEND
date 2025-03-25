@@ -68,8 +68,15 @@ export async function GET(req) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Step 2: Fetch courses from Django API
-        const response = await axios.get(`${API_BASE_URL}/course/courses/`, {
+        // Step 2: Extract course ID from request url params (if present)
+        const {searchParams} = new URL(req.url);
+        const courseId = searchParams.get("id");
+
+        // step 3: construct URL based on the presence of course ID
+        const apiUrl = courseId ? `${API_BASE_URL}/course/courses/${courseId}/` : `${API_BASE_URL}/course/courses/`;
+
+        // Step 4: Fetch courses from Django API
+        const response = await axios.get(apiUrl, {
             headers: {
                 Authorization: `Bearer ${session.accessToken}`,
             },
@@ -82,6 +89,53 @@ export async function GET(req) {
         console.error("Course fetching error:", error?.response?.data || error.message);
 
         const errorMessage = error?.response?.data?.error || "Course fetching failed. Please try again later.";
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}
+
+
+
+
+export async function PATCH(req) {
+    try {
+        // Step 1: Retrieve session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Step 2: Extract course ID from request URL
+        const { searchParams } = new URL(req.url);
+        const courseId = searchParams.get("courseId");
+
+        // Step 3: Validate course ID
+        if (!courseId) {
+            return NextResponse.json({ error: "Course ID is required for update." }, { status: 400 });
+        }
+
+        // Step 4: Parse request body
+        const body = await req.json();
+
+        // Step 5: Send PATCH request to Django API
+        const response = await axios.patch(`${API_BASE_URL}/course/courses/${courseId}/`, body, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        // Step 6: Return Django API response
+        return NextResponse.json(response.data, { status: response.status });
+
+    } catch (error) {
+        console.error("Course update error:", error?.response?.data || error.message);
+
+        // Extract detailed error message
+        const errorMessage =
+            error?.response?.data && typeof error.response.data === "object"
+                ? Object.values(error.response.data)?.[0]?.[0] || "Course update failed."
+                : error?.response?.data || "Course update failed.";
 
         return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
     }

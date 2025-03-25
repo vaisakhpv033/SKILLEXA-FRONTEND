@@ -61,7 +61,7 @@ export default function UserProfile() {
           <p className="text-muted-foreground mt-1">Manage your profile and preferences</p>
         </div>
         <Avatar className="h-12 w-12 ring-2 ring-primary/10">
-          <AvatarImage src={user.avatar} alt={user.first_name} />
+          <AvatarImage src={user.profile_picture} alt={user.first_name} />
           <AvatarFallback>
             <User2 className="h-6 w-6" />
           </AvatarFallback>

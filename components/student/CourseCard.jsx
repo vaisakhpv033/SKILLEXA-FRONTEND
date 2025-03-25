@@ -2,23 +2,25 @@ import { CourseStatusLabel, CourseLevels, courseFallbackImgUrl } from "@/constan
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import Image from "next/image";
-import { BookOpen } from "lucide-react";
+import { BookOpen, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+import { useCartStore } from "@/store/useCartStore";
 
 
 export function CourseCard({ course, handleRedirect }) {
+    const { addItem  } = useCartStore();
 
     return (
 
-        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer" onClick={() => handleRedirect(course.id, course.title)}>
+        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer">
             <motion.div
                 whileHover={{ scale: 1.04, transition: { duration: 0.3 } }}
                 whileTap={{ scale: 0.7 }}
             >
                 <div className="relative aspect-video">
                     <Image src={course.thumbnail || courseFallbackImgUrl} alt={course.title} className="object-cover w-full h-full" width={320} height={180} />
-                    <Badge variant={course.status === 0 ? "secondary" : "destructive"} className="absolute top-4 left-4">
-                        {CourseStatusLabel[course.status]}
+                    <Badge variant="secondary" className="absolute top-4 left-4">
+                        {course.topic_name}
                     </Badge>
                 </div>
                 <CardHeader className="pt-2">
@@ -36,7 +38,9 @@ export function CourseCard({ course, handleRedirect }) {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <p className="font-semibold">₹{parseFloat(course.price).toFixed(2)}</p>
+                    <div className="flex justify-between w-full">
+                        <p className="font-semibold">₹{parseFloat(course.price).toFixed(2)}</p>
+                    </div>
                 </CardFooter>
             </motion.div>
         </Card >
