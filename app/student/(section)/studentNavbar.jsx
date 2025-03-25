@@ -9,21 +9,23 @@ import { signOut } from 'next-auth/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Heart } from 'lucide-react';
-
+import { SessionProvider } from 'next-auth/react';
+import GlobalAuthHandler from '@/components/admin/GlobalAuthHandler';
 
 const StudentNavbar = ({navbarLinks}) => {
+    return (
+    <SessionProvider>
+        <GlobalAuthHandler>
+            <StudentNavbarContent navbarLinks={navbarLinks} />
+        </GlobalAuthHandler>
+    </SessionProvider>
+    )
+}
+
+const StudentNavbarContent = ({navbarLinks}) => {
     const pathname = usePathname();
 
-    const [role, setRole] = useState(null);
-
-    useEffect(() => {
-        fetch("/api/user")
-        .then((res) => res.json())
-        .then((data) => setRole(data.role))
-        .catch(() => setRole(null));
-        console.log(role);
-    }, []);
-
+    const role = 1;
 
 
   return (

@@ -1,4 +1,4 @@
-import { BookOpen } from "lucide-react"
+import { BookOpen, LayoutDashboard, Settings2, Plus } from "lucide-react"
 export const navbarLinks = [
     {
         title: 'Home',
@@ -57,7 +57,7 @@ export const instructorNavbarLinks = [
 
 export const sidebarLinks = [
     {
-        label: 'Home',
+        label: 'Dashboard',
         route: '/instructor',
         imgUrl: '/icons/Home.svg',
     },
@@ -85,4 +85,39 @@ export const sidebarLinks = [
         route: '/instructor/settings',
         imgUrl: '/icons/settings.svg',
     }
- ]
+]
+
+
+// course related 
+export const CourseStatus = {
+    DRAFT: 0,
+    PENDING: 1,
+    PUBLISHED: 2,
+    ARCHIVED: 3,
+}
+
+export const CourseStatusLabel = {
+    [CourseStatus.DRAFT]: "Draft",
+    [CourseStatus.PENDING]: "Pending",
+    [CourseStatus.PUBLISHED]: "Published",
+    [CourseStatus.ARCHIVED]: "Archived",
+};
+
+export const LEVELS = {
+    BEGINNER: 1,
+    INTERMEDIATE: 2,
+    ADVANCED: 3,
+    ALL: 4,
+}
+
+export const CourseLevels = {
+    [LEVELS.BEGINNER]: "Beginner",
+    [LEVELS.INTERMEDIATE]: "Intermediate",
+    [LEVELS.ADVANCED]: "Advanced",
+    [LEVELS.ALL]: "All Levels",
+};
+
+export const courseFallbackImgUrl = "/images/home-image.avif";
+
+
+

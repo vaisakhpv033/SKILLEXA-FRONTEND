@@ -45,7 +45,7 @@ export default function UserProfile() {
 
   if (isLoading) {
     return (
-        <div className='container max-w-4xl mx-auto p-4 py-8'>
+        <div className='container max-w-5xl mx-auto p-4 py-8'>
             <div className='flex item-center justify-center'>
                 <Loader2 className="mr-2 h-12 w-12 mt-2 animate-spin" />
             </div>
@@ -54,14 +54,14 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto p-4 py-8">
+    <div className="container max-w-5xl mx-auto p-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">Account Settings</h1>
           <p className="text-muted-foreground mt-1">Manage your profile and preferences</p>
         </div>
         <Avatar className="h-12 w-12 ring-2 ring-primary/10">
-          <AvatarImage src={user.avatar} alt={user.first_name} />
+          <AvatarImage src={user.profile_picture} alt={user.first_name} />
           <AvatarFallback>
             <User2 className="h-6 w-6" />
           </AvatarFallback>
