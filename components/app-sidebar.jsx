@@ -42,13 +42,7 @@ const data = {
         { title: "Pending Approvals", url: "/admin/courses/pending" },
       ],
     },
-    {
-      title: "Coupon Management",
-      items: [
-        { title: "Create", url: "/admin/coupons/create" },
-        { title: "All Coupons", url: "/admin/coupons" },
-      ],
-    },
+
     {
       title: "Revenue",
       items: [

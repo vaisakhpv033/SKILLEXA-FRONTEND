@@ -14,9 +14,13 @@ async function refreshAccessToken(token) {
       });
       
       const decodedToken = jwt.decode(response.data.access);
+
+      
+      console.log("new tokens: ", response.data);
       return {
         ...token,
         accessToken: response.data.access,
+        refreshToken: response.data.refresh || token.refreshToken,
         accessTokenExpires: decodedToken.exp * 1000,
       };
     } catch (error) {
@@ -119,7 +123,15 @@ export const authOptions = {
         return token;
       }
 
-      return await refreshAccessToken(token);
+      const refreshedToken = await refreshAccessToken(token);
+
+      return {
+        ...token,
+        accessToken: refreshedToken.accessToken,
+        refreshToken: refreshedToken.refreshToken,
+        accessTokenExpires: refreshedToken.accessTokenExpires,
+        user: refreshedToken.user,
+      };
     },
 
     async session({ session, token }) {
@@ -128,6 +140,7 @@ export const authOptions = {
             return null; 
         }
         session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
         session.user = token.user;
         return session;
     },

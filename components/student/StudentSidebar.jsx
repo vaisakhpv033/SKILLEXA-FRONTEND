@@ -1,13 +1,9 @@
 'use client';
 import * as React from "react";
-import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
 import { signOut } from "next-auth/react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+
 import {
   Sidebar,
   SidebarContent,
@@ -52,6 +48,13 @@ const data = {
 };
 
 export function StudentSidebar({ ...props }) {
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const handleSignout = () => {
+      setIsLoggingOut(true);
+  
+      signOut({ callbackUrl: "/login" })
+      
+    }
   return (
     <Sidebar {...props}>
       <SidebarHeader className="bg-background">
@@ -81,8 +84,9 @@ export function StudentSidebar({ ...props }) {
 
             {/* Sign Out Button - Corrected */}
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" onClick={() => signOut({ callbackUrl: "/login" })}>
+              <SidebarMenuButton size="lg" onClick={handleSignout}>
                 <LogOut />Sign Out
+                {isLoggingOut && <><div className="fixed cursor-wait z-50 top-0 h-screen w-full inset-0 bg-slate-500 dark:bg-transparent backdrop-blur-2xl bg-opacity-70 flex items-center justify-center"><p className='animate-pulse text-lg'>Signing Out...</p></div></>}
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

@@ -12,7 +12,7 @@ export function CourseCard({ course, handleRedirect }) {
 
     return (
 
-        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer">
+        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer" onClick={() => handleRedirect(course.id, course.title)}>
             <motion.div
                 whileHover={{ scale: 1.04, transition: { duration: 0.3 } }}
                 whileTap={{ scale: 0.7 }}

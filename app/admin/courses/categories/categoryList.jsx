@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import useSWR from "swr";
-import { Plus, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, ChevronDown, ChevronRight, PenLine } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 import {
   Card,
@@ -89,14 +90,17 @@ export default function CategoryList() {
         body: JSON.stringify(values),
       });
 
-      if (!response.ok) throw new Error("Failed to create category");
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data?.error || "Something Went wrong");
 
       // Refresh the categories list
       await mutate();
       setOpen(false);
       form.reset();
     } catch (error) {
-      console.error("Error creating category:", error);
+      //console.error("Error creating category:", error);
+      toast.error(error?.message || "Something went wrong")
     }
   }
 
@@ -174,8 +178,8 @@ export default function CategoryList() {
         <div className="grid gap-4">
           {data?.results.map((category) => (
             category ? (
-            <CategoryItem key={category?.id} category={category} />
-            ):(
+              <CategoryItem key={category?.id} category={category} mutate={mutate} />
+            ) : (
               <span className="text-red-700">Something Went Wrong.Error Fetching Categories</span>
             )
           ))}
@@ -185,7 +189,7 @@ export default function CategoryList() {
   );
 }
 
-function CategoryItem({ category }) {
+function CategoryItem({ category, mutate, subcategory = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasSubcategories = category.subcategories.length > 0;
 
@@ -197,17 +201,21 @@ function CategoryItem({ category }) {
             <CardTitle className="text-md font-semibold">
               {category?.name}
             </CardTitle>
-            {hasSubcategories && (
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  {isOpen ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
-                </Button>
-              </CollapsibleTrigger>
-            )}
+            <div className="flex items-center justify-end gap-2">
+              <SubCategoryEditModal category={category} mutate={mutate} />
+              {!subcategory && <SubCategoryModal category={category} mutate={mutate} />}
+              {hasSubcategories && (
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    {isOpen ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+              )}
+            </div>
           </div>
         </CardHeader>
         {hasSubcategories && (
@@ -215,7 +223,7 @@ function CategoryItem({ category }) {
             <CardContent className="pt-0 pb-4">
               <div className="pl-6 border-l-2 border-muted ml-4 space-y-2">
                 {category.subcategories.map((sub) => (
-                  <CategoryItem key={sub?.id} category={sub} />
+                  <CategoryItem key={sub?.id} category={sub} subcategory={true} mutate={mutate} />
                 ))}
               </div>
             </CardContent>
@@ -227,6 +235,143 @@ function CategoryItem({ category }) {
 }
 
 
+
+
+
+export function SubCategoryModal({ category, mutate }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setError("");
+
+    // validation
+    if (!name.trim()) {
+      setError("Subcategory name is required");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, parent: category.id }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Something went wrong");
+
+      await mutate();
+      setOpen(false);
+      setName(""); // Reset form
+      toast.success("Subcategory created successfully!");
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="rounded-md p-2 h-8 w-8" variant="outline">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create New Subcategory for {category.name}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Subcategory Name</label>
+            <Input
+              type="text"
+              placeholder="Enter subcategory name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+          </div>
+
+          <Button type="submit" className="w-full">
+            Create Subcategory
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
+export function SubCategoryEditModal({ category, mutate }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(category.name);
+  const [error, setError] = useState("");
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setError("");
+
+    // validation
+    if (!name.trim()) {
+      setError("Topic name is required");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/categories/?topicId=${category.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Something went wrong");
+
+      await mutate();
+      setOpen(false);
+      setName(""); // Reset form
+      toast.success("Subcategory created successfully!");
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="rounded-md p-2 h-8 w-8" variant="outline"><PenLine className="h-0 w-0" /></Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit {category.name}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Topic Name</label>
+            <Input
+              type="text"
+              placeholder="Enter subcategory name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+          </div>
+
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 
 

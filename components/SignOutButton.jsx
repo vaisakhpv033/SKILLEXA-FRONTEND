@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react'
 import { Button } from './ui/button'
 import { SessionProvider } from 'next-auth/react'
 import GlobalAuthHandler from './admin/GlobalAuthHandler'
+import { logoutUser } from '@/lib/client/logout'
 
 
 export const SignOutButtonProvider = () => {
@@ -20,15 +21,26 @@ export const SignOutButtonProvider = () => {
 
 const SignOutButton = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const handleSignout = () => {
-    signOut({ callbackUrl: "/login" })
+
+  const handleSignout = async () => {
     setIsLoggingOut(true);
-    
-  }
+
+    try {
+      // Wait for the logout API call to complete
+      await logoutUser();
+
+      await signOut({ callbackUrl: "/login" });
+
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+      setIsLoggingOut(false); 
+    }
+  };
+
   return (
     <>
-    <Button variant="ghost" className="flex gap-4 items-center p-4 rounded-lg  text-lg justify-start max-sm:text-sm hover:text-violet-500" onClick={() => signOut({ callbackUrl: "/login" })}>Logout</Button>
-    {isLoggingOut && <div className="fixed top-0 min-w-full min-h-screen">Logging out....</div>}
+    <Button variant="ghost" className="flex gap-4 items-center p-4 rounded-lg  text-lg justify-start max-sm:text-sm hover:text-violet-500" onClick={handleSignout}>Logout</Button>
+    {isLoggingOut && <><div className="fixed cursor-wait z-50 top-0 h-screen w-full inset-0 bg-slate-500 dark:bg-transparent backdrop-blur-2xl bg-opacity-70 flex items-center justify-center"><p className='animate-pulse text-lg'>Signing Out...</p></div></>}
     </>
   )
 }
