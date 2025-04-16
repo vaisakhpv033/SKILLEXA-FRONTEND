@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import { getAdminOrderData } from '@/lib/server/adminOrderHistory';
