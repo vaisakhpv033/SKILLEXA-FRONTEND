@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from 'react'
 import { getWishlistItems } from '@/lib/server/wishlistItems';
 import { WishListCard } from '@/components/student/WishlistCard';

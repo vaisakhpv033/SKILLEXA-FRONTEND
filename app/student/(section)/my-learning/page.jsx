@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from 'react'
 import { getEnrolledCourses } from '@/lib/server/enrolledCourses'
 import { EnrolledCourseCard } from '@/components/student/EnrolledCourseCard';
