@@ -97,6 +97,7 @@ export default function CategoryList() {
       // Refresh the categories list
       await mutate();
       setOpen(false);
+      toast.success("Category created successfully!");
       form.reset();
     } catch (error) {
       //console.error("Error creating category:", error);

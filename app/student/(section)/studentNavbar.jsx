@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart, Heart } from 'lucide-react';
 import { SessionProvider } from 'next-auth/react';
 import GlobalAuthHandler from '@/components/admin/GlobalAuthHandler';
+import { useCartStore } from '@/store/useCartStore';
 
 const StudentNavbar = ({navbarLinks}) => {
     return (
@@ -24,8 +25,14 @@ const StudentNavbar = ({navbarLinks}) => {
 
 const StudentNavbarContent = ({navbarLinks}) => {
     const pathname = usePathname();
-
+    const { items: cartItems } = useCartStore();
     const role = 1;
+    const getItemsCount = useCartStore((state) => state.getItemsCount);
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        setCartCount(getItemsCount());
+    }, [cartItems]);
 
 
   return (
@@ -48,8 +55,20 @@ const StudentNavbarContent = ({navbarLinks}) => {
                     </Link>
                 )
             })}
-            <Link href="/student/my-learning/wishlist" className="hover:bg-secondary p-1 rounded-full"><Heart className="h-5"/></Link>
-            <Link href="/student/cart" className='hover:bg-secondary p-1 rounded-full'><ShoppingCart className="h-5" /></Link>
+            <Link href="/student/wishlist" className="hover:bg-secondary p-1 rounded-full"><Heart className="h-5"/></Link>
+
+
+            <Link href="/student/cart" className='relative hover:bg-secondary p-1 rounded-full'>
+                    <ShoppingCart className="h-5" />
+                    {cartCount > 0 && (
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-violet-600 text-white text-xs flex items-center justify-center rounded-full">
+                            {cartCount}
+                        </span>
+                    )}
+            </Link>
+
+
+
             {role && (
             <Link href="/student/profile/">
             <Avatar className="h-8 w-8">
