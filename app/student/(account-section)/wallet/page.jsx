@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +25,7 @@ export default async function WalletPage() {
             <CardTitle className="text-xl">Balance</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold text-green-600">
-            ₹ {walletData.balance}
+            ₹ {walletData?.balance}
           </CardContent>
         </Card>
 
@@ -33,7 +34,7 @@ export default async function WalletPage() {
             <CardTitle className="text-xl">Locked Balance</CardTitle>
           </CardHeader>
           <CardContent className="text-2xl font-bold text-yellow-500">
-            ₹ {walletData.locked_balance}
+            ₹ {walletData?.locked_balance}
           </CardContent>
         </Card>
       </div>
@@ -42,7 +43,7 @@ export default async function WalletPage() {
         <h2 className="text-xl font-semibold mb-2">Transaction History</h2>
         <ScrollArea className="h-[300px] w-full rounded-md border p-2">
           <ul className="space-y-4">
-            {walletData.transactions.map((txn) => (
+            {walletData?.transactions.map((txn) => (
               <li key={txn.transaction_no} className="border p-4 rounded-md shadow-sm">
                 <div className="flex justify-between items-center">
                   <div>

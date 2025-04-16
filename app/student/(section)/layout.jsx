@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import StudentNavbar from './studentNavbar'
 import { studentNavbarLinks } from '@/constants'
 import React from 'react'
