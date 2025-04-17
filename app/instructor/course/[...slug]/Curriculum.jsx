@@ -66,6 +66,7 @@ const Curriculum = ({ course }) => {
             toast.error(response?.result || "Something went wrong")
         }
         mutate();
+        form.reset();
         setOpen(false);
     }
 
@@ -75,7 +76,10 @@ const Curriculum = ({ course }) => {
     return (
         <>
         <div className='flex justify-end'>
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={open} onOpenChange={(isOpen) => {
+                setOpen(isOpen);
+                if (!isOpen) form.reset()
+                }}>
                 <DialogTrigger asChild>
                     <Button variant="outline">
                         <Plus className="mr-2 h-4 w-4" />

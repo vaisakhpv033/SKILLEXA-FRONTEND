@@ -6,26 +6,12 @@ import {
     AccordionTrigger,
     AccordionContent,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Plus, PenLine, Trash2, Video, FileText, ListChecks, Eye
+    Video, FileText, SquarePlus
 } from "lucide-react";
-import { updateSection } from '@/lib/client/instructorCurriculum';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { DeleteSection, EditSection } from '@/components/instructor/curriculum/SectionComponents';
+import { AddLessons, EditLesson, DeleteLesson } from '@/components/instructor/curriculum/LessonComponent';
 
 const CourseContent = ({ contents, mutate }) => {
     const [selectedLesson, setSelectedLesson] = useState(null);
@@ -41,14 +27,14 @@ const CourseContent = ({ contents, mutate }) => {
             <Accordion type="multiple" className="w-full space-y-1">
                 {contents
                     .sort((a, b) => a.order - b.order)
-                    .map((section) => (
+                    .map((section, idx) => (
                         <AccordionItem key={section.id} value={`section-${section.id}`} className="border rounded-md">
                             <div className="flex justify-between items-center px-4  bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700">
-                                <AccordionTrigger className="text-md font-medium flex-grow">{section.title}</AccordionTrigger>
+                                <AccordionTrigger className="text-md font-medium flex-grow">Section {idx+1}: {section.title}</AccordionTrigger>
                                 <div className="flex gap-2 ml-4">
                                     <EditSection section={section} mutate={mutate} />
-                                    <Button size="icon" variant="ghost"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                                    <AddLessons />
+                                    <DeleteSection section={section} mutate={mutate} />
+                                    <AddLessons section={section} mutate={mutate} />
                                 </div>
                             </div>
                             <AccordionContent className="px-4 py-2 bg-white dark:bg-transparent">
@@ -62,9 +48,9 @@ const CourseContent = ({ contents, mutate }) => {
                                             >
                                                 <div className="flex items-start gap-3" onClick={() => handleViewLesson(lesson)}>
                                                     {lesson.video_url ? (
-                                                        <Video className="text-violet-600 mt-1" />
+                                                        <Video className="text-violet-600 hover:text-violet-800 mt-1" />
                                                     ) : (
-                                                        <FileText className="text-blue-600 mt-1" />
+                                                        lesson.content ? <FileText className="text-violet-600 hover:text-violet-800 mt-1" /> : <SquarePlus className='text-blue-500 hover:text-blue-700' />
                                                     )}
                                                     <div>
                                                         <div className="font-semibold">{lesson.title}</div>
@@ -76,8 +62,8 @@ const CourseContent = ({ contents, mutate }) => {
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2">
-                                                    <Button size="icon" variant="ghost" className="h-8 px-3 py-2"><PenLine className="h-3 w-3" /></Button>
-                                                    <Button size="icon" variant="destructive" className="h-8 px-3 py-2"><Trash2 className="h-3 w-3" /></Button>
+                                                    <EditLesson lesson={lesson} mutate={mutate} />
+                                                    <DeleteLesson lesson={lesson} mutate={mutate} />
                                                 </div>
                                             </div>
                                         ))}
@@ -101,126 +87,6 @@ const CourseContent = ({ contents, mutate }) => {
 export default CourseContent;
 
 
-
-
-// Edit Section Component
-function EditSection({section, mutate}) {
-    const [open, setOpen] = useState(false);
-
-    const SectionSchema = z.object({
-        title: z.string().min(5).max(50).regex(/^[a-zA-Z0-9\s]+$/, {
-            message: "Section name must contain only letters, numbers and spaces",
-        }),
-    });
-
-    const form = useForm({
-        resolver: zodResolver(SectionSchema),
-        defaultValues: { title: section.title },
-    });
-
-    const onSubmit = async (data) => {
-        console.log("data", data);
-        const response = await updateSection(data, section.id);
-        if (response.status == true) {
-            toast.success("Section Updated Successfully");
-        } else {
-            toast.error(response?.result || "Something went wrong")
-        }
-        mutate();
-        setOpen(false);
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="ghost" className="px-3 py-2 h-8 text-xs">
-                    <PenLine className="h-3 w-3" />
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit Section {section.title}</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Section Title</FormLabel>
-                                    <FormControl>
-                                        <Input value={section.title} {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="w-full">Update Section</Button>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-
-
-
-// Add Lesson Component
-function AddLessons() {
-    const [open, setOpen] = useState(false);
-
-    const LessonSchema = z.object({
-        title: z.string().min(5).max(50).regex(/^[a-zA-Z0-9\s]+$/, {
-            message: "Category name must contain only letters, numbers and spaces",
-        }),
-    });
-
-    const form = useForm({
-        resolver: zodResolver(LessonSchema),
-        defaultValues: { title: "" },
-    });
-
-    const onSubmit = async (data) => {
-        console.log(data);
-        setOpen(false);
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" className="px-3 py-2 h-8 text-xs">
-                    <Plus className="mr-1 h-3 w-3" />
-                    Lesson
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Add New Lesson</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Lesson Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter lesson title" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="w-full">Create Lesson</Button>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
-    );
-}
 
 // Lesson Modal Component
 function LessonModal({ open, onClose, lesson }) {
