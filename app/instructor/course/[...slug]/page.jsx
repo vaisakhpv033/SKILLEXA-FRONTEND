@@ -17,6 +17,7 @@ import Loading from '@/components/Loading';
 import ErrorComponent from '@/components/ErrorComponent';
 import BasicInformation from './BasicInformation';
 import Publish from './Publish';
+import Curriculum from './Curriculum';
 
 const page = () => {
     const [activeTab, setActiveTab] = React.useState("basic");
@@ -78,6 +79,9 @@ const page = () => {
                 )}
                 {activeTab === "publish" && (
                     <Publish course={course} mutate={mutate} />
+                )}
+                {activeTab === "curriculum" && (
+                    <Curriculum course={course} />
                 )}
             </div>
 
