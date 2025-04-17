@@ -29,6 +29,7 @@ import { useSection } from '@/lib/client/instructorCurriculum';
 import Loading from '@/components/Loading';
 import ErrorComponent from '@/components/ErrorComponent';
 import CourseContent from './courseContent';
+import { createSection } from '@/lib/client/instructorCurriculum';
 
 const Curriculum = ({ course }) => {
     const {result, isLoading, isError,  mutate} = useSection(`/api/instructor/course/section/?id=${course.id}`);
@@ -50,7 +51,21 @@ const Curriculum = ({ course }) => {
     });
 
     const onSubmit = async (data) => {
+        // Determine next order number dynamically
+        const nextOrder = result && result.length > 0
+        ? Math.max(...result.map((section) => section.order)) + 1
+        : 1;
+
         console.log(data);
+        let sectionData = {...data, order: nextOrder, course: course.id}
+        console.log("data", sectionData);
+        const response = await createSection(sectionData);
+        if (response.status == true) {
+            toast.success("Created Section Successfully");
+        } else {
+            toast.error(response?.result || "Something went wrong")
+        }
+        mutate();
         setOpen(false);
     }
 

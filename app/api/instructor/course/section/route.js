@@ -38,3 +38,86 @@ export async function GET(req) {
         return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
     }
 }
+
+
+
+export async function POST(req) {
+    try {
+        //  Get session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken || session?.user?.user?.role !== 2) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        //  Extract body from request
+        const body = await req.json();
+
+        //  Send request to Django backend
+        const response = await axios.post(`${API_BASE_URL}/curriculum/sections/`, body, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        console.log("Section Created:", response.data);
+        return NextResponse.json(response.data, { status: response.status });
+
+    } catch (error) {
+        console.error("Section Creation Error:", error?.response?.data || error.message);
+
+        let errorMessage = "Something went wrong. Please try again.";
+        if (error?.response?.data && typeof error.response.data === "object") {
+            const firstKey = Object.keys(error.response.data)[0];
+            errorMessage = error.response.data[firstKey][0] || errorMessage;
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}
+
+
+
+export async function PATCH(req) {
+    try {
+        // Get session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken || session?.user?.user?.role !== 2) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Step 2: Extract section ID from request URL
+        const { searchParams } = new URL(req.url);
+        const sectionId = searchParams.get("id");
+
+        if (!sectionId) {
+            return NextResponse.json({error: "Section id is required"}, {status: 400})
+        }
+
+        //  Extract body from request
+        const body = await req.json();
+
+
+        //  Send request to Django backend
+        const response = await axios.patch(`${API_BASE_URL}/curriculum/sections/${sectionId}/`, body, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        console.log("Section Updated:", response.data);
+        return NextResponse.json(response.data, { status: response.status });
+
+    } catch (error) {
+        console.error("Section Updation Error:", error?.response?.data || error.message);
+
+        let errorMessage = "Something went wrong. Please try again.";
+        if (error?.response?.data && typeof error.response.data === "object") {
+            const firstKey = Object.keys(error.response.data)[0];
+            errorMessage = error.response.data[firstKey][0] || errorMessage;
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}
