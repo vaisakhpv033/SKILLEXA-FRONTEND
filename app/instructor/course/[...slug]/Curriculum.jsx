@@ -30,6 +30,7 @@ import Loading from '@/components/Loading';
 import ErrorComponent from '@/components/ErrorComponent';
 import CourseContent from './courseContent';
 import { createSection } from '@/lib/client/instructorCurriculum';
+import { Separator } from '@/components/ui/separator';
 
 const Curriculum = ({ course }) => {
     const {result, isLoading, isError,  mutate} = useSection(`/api/instructor/course/section/?id=${course.id}`);
@@ -75,7 +76,8 @@ const Curriculum = ({ course }) => {
 
     return (
         <>
-        <div className='flex justify-end'>
+        <div className='flex justify-between'>
+            <h3 className="text-lg md:text-2xl font-bold my-2">Curriculum</h3>
             <Dialog open={open} onOpenChange={(isOpen) => {
                 setOpen(isOpen);
                 if (!isOpen) form.reset()
@@ -114,6 +116,7 @@ const Curriculum = ({ course }) => {
             </Dialog>
 
         </div>
+            <Separator />
             <CourseContent contents={result} mutate={mutate} />
 
         </>
