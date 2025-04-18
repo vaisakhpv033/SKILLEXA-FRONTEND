@@ -1,17 +1,13 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Accordion,
     AccordionItem,
     AccordionTrigger,
     AccordionContent,
 } from "@/components/ui/accordion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import {
-    Video, FileText, SquarePlus
-} from "lucide-react";
 import { DeleteSection, EditSection } from '@/components/instructor/curriculum/SectionComponents';
-import { AddLessons, EditLesson, DeleteLesson, AddContentDropDown, LessonData } from '@/components/instructor/curriculum/LessonComponent';
+import { AddLessons, EditLesson, DeleteLesson, LessonData } from '@/components/instructor/curriculum/LessonComponent';
 
 const CourseContent = ({ contents, mutate }) => {
 
@@ -40,7 +36,7 @@ const CourseContent = ({ contents, mutate }) => {
                                                 key={lesson.id}
                                                 className="flex items-start justify-between p-2 border rounded-md hover:bg-gray-50 dark:hover:bg-gray-900 transition cursor-pointer"
                                             >
-                                                <LessonData lesson={lesson} mutate={mutate} />
+                                                <LessonData course={section.course} lesson={lesson} mutate={mutate} />
                                                 <div className="flex gap-2">
                                                     <EditLesson lesson={lesson} mutate={mutate} />
                                                     <DeleteLesson lesson={lesson} mutate={mutate} />

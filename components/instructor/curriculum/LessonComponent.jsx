@@ -34,14 +34,6 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
   
@@ -232,8 +224,11 @@ export function DeleteLesson({lesson, mutate}) {
 
 }
 
-export function LessonData({ lesson, mutate }) {
+
+// Lesson Content updating and adding
+export function LessonData({ lesson, mutate, course }) {
     const [showContentModal, setShowContentModal] = useState(false);
+    const [showVideoModal, setShowVideoModal] = useState(false);
     const [showOptionsDialog, setShowOptionsDialog] = useState(false);
     const [showLessonModal, setShowLessonModal] = useState(false);
     const [isEditing, setIsEdititng] = useState(false);
@@ -291,7 +286,8 @@ export function LessonData({ lesson, mutate }) {
                                 className="flex items-center gap-2 text-sm hover:bg-gray-100 p-2 rounded"
                                 onClick={() => {
                                     setShowOptionsDialog(false);
-                                    console.log('Open add video modal logic here');
+                                    setShowContentModal(false);
+                                    setShowVideoModal(true);
                                 }}
                             >
                                 <Video className="w-4 h-4" />
@@ -301,6 +297,7 @@ export function LessonData({ lesson, mutate }) {
                                 className="flex items-center gap-2 text-sm hover:bg-gray-100 p-2 rounded"
                                 onClick={() => {
                                     setShowOptionsDialog(false);
+                                    setShowVideoModal(false);
                                     setShowContentModal(true);
                                 }}
                             >
@@ -322,7 +319,18 @@ export function LessonData({ lesson, mutate }) {
                     <DialogHeader>
                         <DialogTitle className='flex items-center justify-start gap-4'>
                             <div>{lesson.title}</div>
-                            <Button variant='outline' onClick={() => setIsEdititng(true)} className='flex item-center justify-center'><PencilIcon className=' mr-1' /> Edit</Button>
+                            {lesson?.content && <Button variant='outline' onClick={() => setIsEdititng(true)} className='flex item-center justify-center'><PencilIcon className=' mr-1' /> Edit</Button>}
+                            {lesson?.video_url && (
+                                <Button variant='outline' 
+                                    onClick={() => {
+                                        setShowLessonModal(false);
+                                        setShowVideoModal(true);
+                                    }}
+                                >
+                                    Upload
+                                </Button>   
+                                )
+                            }
                         </DialogTitle>
                         
                     </DialogHeader>
@@ -374,12 +382,177 @@ export function LessonData({ lesson, mutate }) {
                     mutate={mutate}
                 />
             )}
+
+            {/* Modal for adding Video content */}
+            {showVideoModal && (
+                <AddVideoContentModal
+                    open={showVideoModal}
+                    onClose={() => setShowVideoModal(false)}
+                    lesson={lesson}
+                    mutate={mutate}
+                    course={course}
+                />
+            )}
         </div>
     );
 }
 
 
+export function AddVideoContentModal({ open, onClose, lesson, mutate, course }) {
+    const [videoFile, setVideoFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setVideoFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!videoFile) return;
+
+        const allowedVideoFormats = ["video/mp4", "video/webm", "video/ogg"];
+        const maxSize = 100 * 1024 * 1024; // 100MB
+        const maxDuration = 600; // 10 minutes
+        const minWidth = 640;   // 480p minimum
+        const minHeight = 480;
+        const maxWidth = 1920;  // 1080p maximum
+        const maxHeight = 1080;
+
+         // Check format
+        if (!allowedVideoFormats.includes(videoFile.type)) {
+            toast.error("Invalid video format. Please upload MP4, WebM, or Ogg.");
+            return;
+        }
+
+        // Check size
+        if (videoFile.size > maxSize) {
+            toast.error("Video size must be less than 100MB.");
+            return;
+        }
+
+        const videoEl = document.createElement("video");
+        videoEl.preload = "metadata";
+
+        videoEl.onloadedmetadata = () => {
+            window.URL.revokeObjectURL(videoEl.src);
+    
+            const { duration, videoWidth, videoHeight } = videoEl;
+    
+            if (duration > maxDuration) {
+                toast.error("Video is too long. Maximum allowed is 10 minutes.");
+                return;
+            }
+    
+            if (videoWidth > maxWidth || videoHeight > maxHeight) {
+                toast.error("Video resolution too high. Max allowed is 1920x1080.");
+                return;
+            }
+    
+            if (videoWidth < minWidth || videoHeight < minHeight) {
+                toast.error("Video resolution too low. Minimum allowed is 640x480 (480p).");
+                return;
+            }
+    
+
+        };
+    
+        videoEl.onerror = () => {
+            toast.error("Unable to load video metadata.");
+        };
+    
+        setIsUploading(true);
+
+        try {
+
+            // step 1 get a signed url with user id
+            const signedUrlRes = await fetch(`/api/instructor/course/lesson/video?course=${course}&section=${lesson.section}&lesson=${lesson.id}`);
+
+            const signedUrlData = await signedUrlRes.json();
+      
+            if (!signedUrlRes.ok) throw new Error(signedUrlData.error || "Failed to get signed URL");
+      
+            // step 2 upload image to cloudinary 
+            const formData = new FormData();
+            formData.append("file", videoFile);
+            formData.append("api_key", signedUrlData.apiKey);
+            formData.append("timestamp", signedUrlData.timestamp);
+            formData.append("signature", signedUrlData.signature);
+            formData.append("folder", signedUrlData.folder);
+      
+            const uploadRes = await fetch(
+              `https://api.cloudinary.com/v1_1/${signedUrlData.cloudName}/video/upload`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            
+            const uploadData = await uploadRes.json();
+            if (!uploadRes.ok) throw new Error(uploadData.error?.message || "upload failed")
+      
+            const imageUrl = uploadData.secure_url;
+      
+      
+            // step 3 update profile picture url in the database
+            console.log(imageUrl);
+            let data = {"video_url": imageUrl}    
+            const response = await updateLesson(data, lesson.id);
+
+            if (response.status == true) {
+                toast.success("Lesson Content added Successfully");
+            } else {
+                toast.error(response?.result || "Something went wrong")
+            }
+            mutate();
+
+            onClose();
+      
+          } catch (err) {
+            toast.error(err.message || "Image upload failed")
+          }finally {
+            setIsUploading(false);
+          }
+      
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="max-w-xl">
+                <DialogHeader>
+                    <DialogTitle>Upload a Video for {lesson.title}</DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-4 mt-2">
+                    <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleFileChange}
+                        className="block w-full text-sm"
+                    />
+
+                    {previewUrl && (
+                        <video controls className="w-full rounded shadow">
+                            <source src={previewUrl} type={videoFile?.type || "video/mp4"} />
+                            Your browser does not support the video tag.
+                        </video>
+                    )}
+
+                    <Button
+                        onClick={handleUpload}
+                        disabled={!videoFile || isUploading}
+                        className="w-full"
+                    >
+                        {isUploading ? "Uploading..." : "Upload Video"}
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
 
 
 
