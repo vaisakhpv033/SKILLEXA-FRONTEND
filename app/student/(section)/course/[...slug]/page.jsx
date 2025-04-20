@@ -21,9 +21,11 @@ import { useCartStore } from '@/store/useCartStore';
 import { courseFallbackImgUrl } from '@/constants';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Globe, GraduationCap, Users, ListChecks, ShoppingCart } from 'lucide-react';
+import { CheckCircle, Globe, GraduationCap, Users, ListChecks, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import PublicCurriculum from './PublicCurriculum';
+import { useWishlistStore } from '@/store/useWishlistStore';
 
 
 const LANGUAGES = {
@@ -47,16 +49,52 @@ const page = () => {
     const {course, isLoading, isError,  mutate} = useCourse(`/api/instructor/course/create?id=${params.slug[0]}`);
     const decodedTitle = decodeURIComponent(params.slug[1]);
 
-    const { addItem } = useCartStore();
+    const { addItem: addToCart, removeItem: removeFromCart, items: cartItems } = useCartStore();
+    const { addItem: addToWishlist, removeItem: removeFromWishlist, items } = useWishlistStore();
+
+
+
+    const isInCart = React.useMemo(() => {
+        return cartItems.some((item) => item.course === Number(params.slug[0]));
+      }, [cartItems, params]);
 
     const handleAddItem = async (id) => {
-        const response = await addItem(id);
-        if (response.status === true) {
-            toast.success("Added to cart successfully");
-        } else {
-            toast.error(response?.message || "Something went wrong");
-        }
+    if (isInCart) {
+        toast.info("Already in cart");
+        return;
+    }
+    
+    const response = await addToCart(id);
+    if (response.status === true) {
+        toast.success("Added to cart successfully");
+    } else {
+        toast.error(response?.message || "Something went wrong");
+    }
     };
+      
+      
+
+    const isInWishlist = React.useMemo(() => {
+        return items.some((item) => item.course === Number(params.slug[0]));
+    }, [items, params]);
+    
+    const handleToggleWishlist = async (id) => {
+        const numericId = Number(id);
+        const existingItem = items.find((item) => item.course === numericId);
+      
+        if (existingItem) {
+          await removeFromWishlist(existingItem.id); 
+          toast.success("Removed from wishlist");
+        } else {
+          const response = await addToWishlist(numericId);
+          if (response.status === true) {
+            toast.success("Added to wishlist");
+          } else {
+            toast.error(response?.message || "Something went wrong");
+          }
+        }
+      };
+
 
     if (isLoading) return <Loading />
     if (isError) return <ErrorComponent error="Something went wrong" />
@@ -116,7 +154,19 @@ const page = () => {
                     <p className="font-bold">{course.instructor_name}</p>
                     <div className='flex max-sm:flex-col gap-4 items-center justify-start'>
                         <p className="font-semibold">₹{course.price}</p>
-                        <Button onClick={() => handleAddItem(course.id)}><ShoppingCart /> Add to Cart</Button>
+                        <Button
+                            onClick={() => handleAddItem(course.id)}
+                            variant={isInCart ? 'outline' : 'default'}
+                            disabled={isInCart}
+                            >
+                                <ShoppingCart className="mr-2" />
+                                {isInCart ? "In Cart" : "Add to Cart"}
+                        </Button>
+
+                        <Button onClick={() => handleToggleWishlist(course.id)} variant='ghost' className='rounded-lg'>
+                            <Heart className={isInWishlist ? "text-red-500 fill-red-500" : ""} />
+                        </Button>
+
                     </div>
                 </div>
             </div>
@@ -146,6 +196,9 @@ const page = () => {
             <div className='mt-4'>
                 {activeTab === "basic" && (
                     <BasicInformation course={course}  mutate={mutate} />
+                )}
+                {activeTab === 'curriculum' && (
+                    <PublicCurriculum course={course} />
                 )}
             </div>
 

@@ -7,9 +7,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { format } from 'date-fns';
 import { getWalletData } from '@/lib/server/walletData';
 
-
 export default async function WalletPage() {
   const walletData = await getWalletData();
+
   return (
     <section className="w-full max-w-7xl lg:p-4 mx-auto max-lg:p-2">
       <div className="flex items-center justify-between">
@@ -44,27 +44,62 @@ export default async function WalletPage() {
         <h2 className="text-xl font-semibold mb-2">Transaction History</h2>
         <ScrollArea className="h-[300px] w-full rounded-md border p-2">
           <ul className="space-y-4">
-            {walletData.transactions.map((txn) => (
-              <li key={txn.transaction_no} className="border p-4 rounded-md shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-medium text-base">₹ {txn.amount}</h3>
-                    <p className="text-muted-foreground text-sm">{txn.description}</p>
+            {walletData.transactions.map((txn) => {
+              let bgColor = 'bg-white';
+              let amountPrefix = '';
+              let icon = null;
+
+              switch (txn.transaction_type) {
+                case 'locked':
+                  bgColor = 'bg-yellow-100';
+                  icon = '🔒';
+                  break;
+                case 'cancel':
+                case 'withdraw':
+                  bgColor = 'bg-red-100';
+                  amountPrefix = '-';
+                  break;
+                case 'deposit':
+                case 'refund':
+                  bgColor = 'bg-green-100';
+                  break;
+                case 'purchase':
+                  bgColor = 'bg-blue-100';
+                  break;
+                default:
+                  bgColor = 'bg-gray-100';
+              }
+
+              return (
+                <li
+                  key={txn.transaction_no}
+                  className={`border p-4 rounded-md shadow-sm ${bgColor}`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium text-base text-black">
+                        {icon} ₹ {amountPrefix}{txn.amount}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        {txn.description}
+                      </p>
+                      <p className="text-xs text-gray-600 italic mt-1">
+                        Type: {txn.transaction_type}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <Badge variant="outline" className="text-black">{txn.status}</Badge>
+                      <span className="text-xs text-gray-500 mt-1">
+                        {format(new Date(txn.created_at), 'PPPpp')}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <Badge variant="outline">{txn.status}</Badge>
-                    <span className="text-xs text-gray-500 mt-1">
-                      {format(new Date(txn.created_at), 'PPPpp')}
-                    </span>
-                  </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </ScrollArea>
       </div>
     </section>
   );
-};
-
-
+}

@@ -2,7 +2,7 @@
 import React, { useRef, useState, useReducer } from 'react'
 import { courseFallbackImgUrl } from '@/constants'
 import Image from 'next/image'
-import { ImagePlus } from 'lucide-react'
+import { ImagePlus, Trash2 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,7 +11,19 @@ import { toast } from 'sonner';
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
+import { deleteCourse } from '@/lib/client/deleteDraftCourse';
+import { useRouter } from 'next/navigation';
 
 
 const LANGUAGES = [
@@ -170,7 +182,10 @@ const BasicInformation = ({ course: initialCourse, mutate }) => {
     console.log("details ", state)
     return (
         <div className="w-full">
-            <h3 className="text-2xl font-bold my-2">Basic Information</h3>
+            <div className='flex justify-start items-center gap-2'>
+                <h3 className="text-2xl font-bold my-2">Basic Information</h3>
+                {initialCourse.status === 0 && <DeleteCourse course={initialCourse} mutate={mutate}/>}
+            </div>
             <div className='flex flex-col lg:flex-row gap-6'>
                 <div className='w-full lg:w-1/3'>
                     <div className='relative aspect-video overflow-hidden rounded-lg'>
@@ -294,3 +309,50 @@ const BasicInformation = ({ course: initialCourse, mutate }) => {
 }
 
 export default BasicInformation
+
+
+
+
+
+// Delete Course
+export function DeleteCourse({course, mutate}) {
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
+
+    const onDelete = async () => {
+        const response = await deleteCourse(course.id);
+
+        if (response.status == true){
+            toast.success( typeof response?.result === 'string' ? response.result : "lesson Deleted Successfully")
+        } else {
+            toast.error(typeof response?.result === 'string' ? response.result : "Something went wrong")
+        }
+        router.push('/instructor/course')
+        setOpen(false);
+        
+    }
+
+    return (
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+                <Button variant="outline" className="px-3 py-2 h-8 text-xs text-red-500 hover:text-red-700">
+                    <Trash2 className="h-3 w-3" /> Delete
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the course <b className='font-extrabold text-md capitalize text-black'>{course.title}</b> and remove the data from our servers.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction asChild><Button onClick={onDelete} variant="destructive">Delete</Button></AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+    )
+
+}

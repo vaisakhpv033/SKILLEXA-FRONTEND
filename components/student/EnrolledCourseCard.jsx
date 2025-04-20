@@ -5,13 +5,18 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import Image from "next/image";
 import { BookOpen, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 
 export function EnrolledCourseCard({ course }) {
+    const router = useRouter();
+    const handleRedirect = (id, title) => {
+        router.push(`/student/my-learning/${id}/${title}`);
+    }
 
     return (
 
-        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer" onClick={() => ""}>
+        <Card className="overflow-hidden transition-all duration-75 hover:shadow-lg hover:cursor-pointer" onClick={() => handleRedirect(course.course, course.course_title)}>
             <motion.div
                 whileHover={{ scale: 1.04, transition: { duration: 0.3 } }}
                 whileTap={{ scale: 0.7 }}

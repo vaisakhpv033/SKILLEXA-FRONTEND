@@ -140,3 +140,51 @@ export async function PATCH(req) {
         return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
     }
 }
+
+
+
+
+// Delete draft course
+export async function DELETE(req) {
+    try {
+        // Step 1: Retrieve session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken || session?.user?.user?.role !== 2) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Step 2: Extract course ID from request URL
+        const { searchParams } = new URL(req.url);
+        const courseId = searchParams.get("id");
+
+        // Step 3: Validate course ID
+        if (!courseId) {
+            return NextResponse.json({ error: "course ID is required for deletion." }, { status: 400 });
+        }
+
+        // Step 4: Send DELETE request to Django API
+        const response = await axios.delete(`${API_BASE_URL}/course/courses/${courseId}/`, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+            },
+        });
+
+        if (response.status === 204) {
+            return NextResponse.json({ message: "course removed successfully" }, { status: 200 });
+        }
+
+        // Handle standard JSON responses
+        return NextResponse.json(response.data || { message: "course removed successfully" }, { status: response.status });
+
+    } catch (error) {
+        console.error("Something went wrong", error?.response?.data || error.message);
+
+        // Extract detailed error message
+        const errorMessage =
+            error?.response?.data && typeof error.response.data === "object"
+                ? Object.values(error.response.data)?.[0]?.[0] || "Something went wrong"
+                : error?.response?.data || "Something went wrong";
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}

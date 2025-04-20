@@ -3,6 +3,7 @@ import InstructorNavbar from '@/components/InstructorNavbar'
 import Sidebar from '@/components/Sidebar'
 
 const InstructorLayout = ({children}) => {
+  
   return (
     <main className='relative'>
         <InstructorNavbar />
