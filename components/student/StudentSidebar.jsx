@@ -20,7 +20,10 @@ import {
 
 import Link from "next/link";
 import { LogOut, Settings, Wallet, FileStack, CircleUserRound } from "lucide-react";
-
+import { toast } from "sonner";
+import { getToken, deleteToken } from "firebase/messaging";
+import { messaging } from "@/lib/firebase";
+const FIREBASE_VAPID_KEY = process.env.FIREBASE_VAPID_KEY
 
 const data = {
   navMain: [
@@ -49,12 +52,24 @@ const data = {
 
 export function StudentSidebar({ ...props }) {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const handleSignout = () => {
+    const handleSignout = async () => {
       setIsLoggingOut(true);
-  
-      signOut({ callbackUrl: "/login" })
-      
-    }
+      try {
+        const token = await getToken(messaging, { vapidKey: FIREBASE_VAPID_KEY });
+        if (token) {
+          await deleteToken(messaging);
+          console.log("FCM token deleted");
+        }
+        
+    
+       
+        toast.success("Signed Out successfully");
+      } catch (error) {
+        console.error("Error deleting FCM token:", error);
+      } finally {
+        await signOut({ callbackUrl: "/login" });
+      }
+    };
   return (
     <Sidebar {...props}>
       <SidebarHeader className="bg-background">
