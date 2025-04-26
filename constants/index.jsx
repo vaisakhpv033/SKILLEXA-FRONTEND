@@ -1,4 +1,4 @@
-import { BookOpen, LayoutDashboard, Settings2, Plus } from "lucide-react"
+import { BookOpen, LayoutDashboard, Settings2, Plus, Bot } from "lucide-react"
 export const navbarLinks = [
     {
         title: 'Home',
@@ -33,6 +33,13 @@ export const studentNavbarLinks = [
         route: '/student/my-learning',
         imgUrl: <BookOpen />,
     },
+
+    {
+        title: 'Interview',
+        route: '/student/interviews',
+        imgUrl: <Bot />
+
+    }
 ]
 
 

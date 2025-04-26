@@ -40,7 +40,7 @@ const StudentNavbarContent = ({navbarLinks}) => {
         <Link href="/student" className='flex items-center'>
             <p className='text-primary text-[26px] font-extrabold'>SKILLEXA</p>
         </Link>
-        <div className='flex-between gap-6 max-lg:hidden'>
+        <div className='flex-between gap-4 max-lg:hidden'>
             {navbarLinks.map((link) => {
                 const isActive = pathname === link.route || (pathname.startsWith(link.route) && link.route !== "/student");
                 return (

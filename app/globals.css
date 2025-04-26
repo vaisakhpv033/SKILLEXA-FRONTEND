@@ -95,7 +95,72 @@
 
 
 
+@layer utilities {
+  .dark-gradient {
+    @apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
+  }
 
+  .border-gradient {
+    @apply bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33];
+  }
+
+  .pattern {
+    @apply bg-[url('/pattern.png')] bg-top bg-no-repeat;
+  }
+
+  .blue-gradient-dark {
+    @apply bg-gradient-to-b from-[#171532] to-[#08090D];
+  }
+
+  .blue-gradient {
+    @apply bg-gradient-to-l from-[#FFFFFF] to-[#CAC5FE];
+  }
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .card-border {
+    @apply bg-gradient-to-b from-[#D8DADC] to-[#D8DADC33] dark:from-[#4B4D4F] dark:to-[#4B4D4F33] p-0.5 rounded-2xl flex-1;
+  }
+
+  .interviews-section {
+    @apply flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch;
+  }
+
+  .interview-text {
+    @apply text-lg text-center text-white;
+  }
+
+  .card-interview {
+    @apply bg-gradient-to-b from-[#ffffff] to-[#f0f2f5] dark:from-[#1A1C20] dark:to-[#08090D] rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between;
+
+    .badge-text {
+      @apply text-sm font-semibold capitalize;
+    }
+  }
+
+  .tech-tooltip {
+    @apply absolute bottom-full mb-1 hidden group-hover:flex px-2 py-1 text-xs text-white bg-gray-700 rounded-md shadow-md;
+  }
+
+  .btn-disconnect {
+    @apply inline-block px-7 py-3 text-sm font-bold leading-5 text-white transition-colors duration-150 bg-destructive-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-destructive-200 hover:bg-destructive-200 min-w-28;
+  }
+
+  .btn-upload {
+    @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
+  }
+  .btn-primary {
+    @apply w-fit bg-primary  hover:bg-primary/80 rounded-full font-bold px-5 cursor-pointer min-h-10;
+  }
+ 
+  
+}
 
 
 @layer base {
@@ -104,6 +169,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h2 {
+    @apply text-3xl font-semibold;
   }
 }
 
@@ -118,6 +186,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
+
 
 
 
