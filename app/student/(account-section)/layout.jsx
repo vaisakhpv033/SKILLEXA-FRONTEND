@@ -10,7 +10,6 @@ import {
 import Link from "next/link";
 import ModeToggle from "@/components/ModeToggle";
 import { Bell, BookOpen, Heart, ShoppingCart } from "lucide-react";
-import { NotificationSheet } from "@/components/student/NotificationSheet";
 
 const AdminLayout = ({ children }) => {
 
@@ -36,7 +35,7 @@ const AdminLayout = ({ children }) => {
                             </Link>
                             <Separator orientation="vertical" className="mr-2 h-4" />
                                 
-                            <NotificationSheet />
+                            
                             
                             <Separator orientation="vertical" className="mr-2 h-4" />
                             <ModeToggle />
