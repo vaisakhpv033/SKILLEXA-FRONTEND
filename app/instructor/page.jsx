@@ -1,8 +1,9 @@
-
 import React from 'react';
 import DashboardClockCard from './DashboardClockCard';
 import InstructorStatsCard from './InstructorStats';
 import { getdashBoardItems } from '@/lib/client/dashboard';
+
+export const dynamic = 'force-dynamic';
 
 
 const dashboardData = {
