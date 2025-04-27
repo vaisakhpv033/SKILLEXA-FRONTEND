@@ -35,16 +35,16 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        // ✅ Get session from NextAuth
+        //  Get session from NextAuth
         const session = await getServerSession(authOptions);
         if (!session || !session.accessToken || session?.user?.user?.role !== 3) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // ✅ Extract body from request
+        //  Extract body from request
         const body = await req.json();
 
-        // ✅ Send request to Django backend
+        //  Send request to Django backend
         const response = await axios.post(`${API_BASE_URL}/course/topics/`, body, {
             headers: {
                 Authorization: `Bearer ${session.accessToken}`,
@@ -52,11 +52,56 @@ export async function POST(req) {
             },
         });
 
-        console.log("✅ Category Created:", response.data);
+        console.log(" Category Created:", response.data);
         return NextResponse.json(response.data, { status: response.status });
 
     } catch (error) {
         console.error("🚨 Category Creation Error:", error?.response?.data || error.message);
+
+        let errorMessage = "Something went wrong. Please try again.";
+        if (error?.response?.data && typeof error.response.data === "object") {
+            const firstKey = Object.keys(error.response.data)[0];
+            errorMessage = error.response.data[firstKey][0] || errorMessage;
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: error?.response?.status || 500 });
+    }
+}
+
+
+export async function PATCH(req) {
+    try {
+        // Get session from NextAuth
+        const session = await getServerSession(authOptions);
+        if (!session || !session.accessToken || session?.user?.user?.role !== 3) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Step 2: Extract course ID from request URL
+        const { searchParams } = new URL(req.url);
+        const topicId = searchParams.get("topicId");
+
+        if (!topicId) {
+            return NextResponse.json({error: "Topic id is required"}, {status: 400})
+        }
+
+        //  Extract body from request
+        const body = await req.json();
+
+
+        //  Send request to Django backend
+        const response = await axios.patch(`${API_BASE_URL}/course/topics/${topicId}/`, body, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        console.log("Category Updated:", response.data);
+        return NextResponse.json(response.data, { status: response.status });
+
+    } catch (error) {
+        console.error("Category Updation Error:", error?.response?.data || error.message);
 
         let errorMessage = "Something went wrong. Please try again.";
         if (error?.response?.data && typeof error.response.data === "object") {

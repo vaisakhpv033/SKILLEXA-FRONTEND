@@ -8,8 +8,10 @@ export const useCartStore = create((set, get) => ({
         try {
             const updatedItem = await updateCartItem(course);
             set((state) => ({ items: [...state.items, updatedItem] }));
+            return {status: true}
         }catch (error) {
             console.error("failed to add item", error.message)
+            return {status: false, message: error.message || "Failed to add Item"}
         }
     },
 

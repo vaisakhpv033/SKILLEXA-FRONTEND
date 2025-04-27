@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import FeaturedCourses from './FeaturedCourses';
+import Link from 'next/link';
 
 const StudentHome = () => {
   return (
@@ -20,7 +21,7 @@ const StudentHome = () => {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Input placeholder="What do you want to learn?" className="max-w-sm" />
-              <Button size="lg">Explore Courses</Button>
+              <Link href='/student/course' ><Button size="lg">Explore Courses</Button></Link>
             </div>
           </div>
           <div className="hidden md:block">

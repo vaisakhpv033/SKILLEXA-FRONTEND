@@ -9,9 +9,11 @@ import OutcomeStep from "./OutcomesStep";
 import TargetAudienceStep from "./TargetAudienceStep";
 import { useCourseStore } from "@/store/useCourseStore";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CourseCreationStepper() {
   const {courseData, resetCourseData} = useCourseStore();
+  const router = useRouter();
 
   const methods = useForm({
     resolver: zodResolver(basicInfoSchema),
@@ -90,6 +92,7 @@ export default function CourseCreationStepper() {
       toast.success("Course Created Successfully and saved as draft")
       console.log("Course created successfully:", responseData);
       // TODO: Redirect or show success message
+      router.push('/instructor/course')
     } catch (error) {
       console.error("Error:", error.message);
       toast.error(error.message || "Something went wrong. Please try later.")

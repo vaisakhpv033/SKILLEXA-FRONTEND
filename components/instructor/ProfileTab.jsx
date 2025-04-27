@@ -198,7 +198,7 @@ export default function ProfileTab({ user, setUser }) {
           </div>
           <div>
             <Label htmlFor="description">About</Label>
-            <Textarea id="description" {...register("bio")} />
+            <Textarea rows={10} id="description" {...register("bio")} />
             {errors.bio && <p className="text-red-500 text-sm">{errors.bio.message}</p>}
           </div>
           <div className="my-4">

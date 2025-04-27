@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link";
 import ModeToggle from "@/components/ModeToggle";
-import { BookOpen, ShoppingCart } from "lucide-react";
+import { Bell, BookOpen, Heart, ShoppingCart } from "lucide-react";
+import { NotificationSheet } from "@/components/student/NotificationSheet";
 
 const AdminLayout = ({ children }) => {
 
@@ -23,12 +24,20 @@ const AdminLayout = ({ children }) => {
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                             <Link href="/student/my-learning">
-                                <SidebarMenuButton><BookOpen/> My learning</SidebarMenuButton>
+                                <SidebarMenuButton><BookOpen/> <span className="max-md:hidden">My learning</span></SidebarMenuButton>
                             </Link>
                             <Separator orientation="vertical" className="mr-2 h-4" />
+                            <Link href="/student/wishlist">
+                                <SidebarMenuButton><Heart /></SidebarMenuButton>
+                            </Link>                           
+                            <Separator orientation='vertical' className="mr-2 h-4" />
                             <Link href="/student/cart">
                                 <SidebarMenuButton><ShoppingCart /></SidebarMenuButton>
                             </Link>
+                            <Separator orientation="vertical" className="mr-2 h-4" />
+                                
+                            <NotificationSheet />
+                            
                             <Separator orientation="vertical" className="mr-2 h-4" />
                             <ModeToggle />
                         </div>

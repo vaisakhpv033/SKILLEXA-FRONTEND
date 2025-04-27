@@ -1,13 +1,9 @@
 'use client';
 import * as React from "react";
-import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
 import { signOut } from "next-auth/react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+
 import {
   Sidebar,
   SidebarContent,
@@ -24,7 +20,10 @@ import {
 
 import Link from "next/link";
 import { LogOut, Settings, Wallet, FileStack, CircleUserRound } from "lucide-react";
-
+import { toast } from "sonner";
+import { getToken, deleteToken } from "firebase/messaging";
+import { messaging } from "@/lib/firebase";
+const FIREBASE_VAPID_KEY = process.env.FIREBASE_VAPID_KEY
 
 const data = {
   navMain: [
@@ -52,6 +51,25 @@ const data = {
 };
 
 export function StudentSidebar({ ...props }) {
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const handleSignout = async () => {
+      setIsLoggingOut(true);
+      try {
+        const token = await getToken(messaging, { vapidKey: FIREBASE_VAPID_KEY });
+        if (token) {
+          await deleteToken(messaging);
+          console.log("FCM token deleted");
+        }
+        
+    
+       
+        toast.success("Signed Out successfully");
+      } catch (error) {
+        console.error("Error deleting FCM token:", error);
+      } finally {
+        await signOut({ callbackUrl: "/login" });
+      }
+    };
   return (
     <Sidebar {...props}>
       <SidebarHeader className="bg-background">
@@ -81,8 +99,9 @@ export function StudentSidebar({ ...props }) {
 
             {/* Sign Out Button - Corrected */}
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" onClick={() => signOut({ callbackUrl: "/login" })}>
+              <SidebarMenuButton size="lg" onClick={handleSignout}>
                 <LogOut />Sign Out
+                {isLoggingOut && <><div className="fixed cursor-wait z-50 top-0 h-screen w-full inset-0 bg-slate-500 dark:bg-transparent backdrop-blur-2xl bg-opacity-70 flex items-center justify-center"><p className='animate-pulse text-lg'>Signing Out...</p></div></>}
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
