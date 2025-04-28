@@ -4,9 +4,9 @@ import { getUserProfile } from '@/lib/server/getUserProfile'
 import ErrorComponent from '@/components/ErrorComponent';
 
 
+
 const Interview = async () => {
-  const user = await getUserProfile();
-  if (!user.success){
+  const user = await getUserProfile();  if (!user.success){
     return <ErrorComponent error={user?.message || "Something went wrong"} />
   }
   console.log(user);
