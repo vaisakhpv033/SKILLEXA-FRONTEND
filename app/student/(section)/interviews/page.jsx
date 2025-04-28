@@ -14,7 +14,7 @@ const AiMockInterview = () => {
                 <p className='text-lg'>Practice on real interview questions & get instant feedback</p>
 
                 <Button asChild>
-                    <Link href="/interview">Start an Interview</Link>
+                    <Link href="/student/interviews/interview">Start an Interview</Link>
                 </Button>
             </div>
             <Image src='/images/robot.png' alt='robo-dude' width={400} height={400} className='max-sm:hidden' />
