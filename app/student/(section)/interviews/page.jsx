@@ -2,10 +2,9 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { dummyInterviews } from '@/constants/interview'
 import InterviewCard from './InterviewCard'
 import { getUserProfile } from '@/lib/server/getUserProfile'
-import { getFeaturedInterviewByAdmin, getInterviewByUserId } from '@/lib/actions/action'
+import { getFeaturedInterviewByAdmin, getInterviewByUserId } from '@/lib/actions/interview_action'
 
 const AiMockInterview = async () => {
     const user = await getUserProfile();

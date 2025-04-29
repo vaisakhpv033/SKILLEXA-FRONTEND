@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import DisplayTechIcons from './DisplayTechIcons';
 
-const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt}) => {
+const InterviewCard = ({id, userId, role, type, techstack, createdAt, coverImage}) => {
     const feedback = null;
     const formatedDate = dayjs(createdAt || Date.now()).format('MMM D, YYYY');
   return (
@@ -17,7 +17,7 @@ const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt}) 
                     <p className='badge-text'>{type}</p>
                 </div>
 
-                <Image src={getRandomInterviewCover()} alt="cover-image" width={50} height={50} className='rounded-full object-fit size-[90px]' />
+                <Image src={coverImage || getRandomInterviewCover()} alt="cover-image" width={50} height={50} className='rounded-full object-fit size-[90px]' />
 
                 <h3 className='mt-5 capitalize'>
                     {role} Interview
@@ -43,7 +43,7 @@ const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt}) 
             <div className='flex flex-row justify-between'>
                 <DisplayTechIcons techstack={techstack} />
                 <Button className='btn-primary'>
-                    <Link href={feedback ? `/student/interviews/${interviewId}/feedback` : `/student/interviews/${interviewId}`}>
+                    <Link href={feedback ? `/student/interviews/interview/${id}/feedback` : `/student/interviews/interview/${id}`}>
                         {feedback ? 'Check Feedback' : 'View Interview'}
                     </Link>
                 </Button>
