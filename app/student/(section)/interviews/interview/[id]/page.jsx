@@ -30,7 +30,10 @@ const page = async ({params}) => {
             </div>
             <p className='px-4 py-2 rounded-lg h-fit capitalize'>{interview.type}</p>
         </div>
-        <Agent userName={user.data?.first_name ||  user.data?.username} userId={user.data.id} interviewId={id} type="interview" profileUrl={user.data?.profile_picture} questions={interview.questions}/>
+        <div className='flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8'>
+
+            <Agent userName={user.data?.first_name ||  user.data?.username} userId={user.data.id} interviewId={id} type="interview" profileUrl={user.data?.profile_picture} questions={interview.questions}/>
+        </div>
     </>
   )
 }
