@@ -1,11 +1,26 @@
+import ErrorComponent from "@/components/ErrorComponent";
+import { getAdminDashboardData, getAdminOrderRevenueData } from "@/lib/server/adminDashboard"
+import AdminDashboard from "@/components/admin/AdminDashboard";
+import AdminOrderRevenueData from "@/components/admin/AdminOrderRevenueData";
 
 
-export default function AdminDashboard() {
+export default async function page() {
+  const response = await getAdminDashboardData();
+  const revenueData = await getAdminOrderRevenueData();
+
+  console.log(revenueData);
+
+  if (!response?.success) {
+    return <ErrorComponent error={response?.message || "Something went wrong"} />
+  }
+  console.log(response)
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-        <h1 className="text-xl font-bold flex justify-center p-4 w-full">Admin Dashboard</h1>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-      </div>
-    </div>
+    <section className="mx-auto max-w-7xl">
+      <AdminDashboard data={response.data}/>
+
+      {revenueData && <AdminOrderRevenueData data={revenueData.data} />}
+
+
+    </section>
   )
 }

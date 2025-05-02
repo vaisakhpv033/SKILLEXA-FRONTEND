@@ -28,7 +28,7 @@ const AiMockInterview = async () => {
             Practice on real interview questions & get instant feedback
           </p>
           <Button asChild className="w-fit">
-            <Link href="/student/interviews/interview">Start an Interview</Link>
+            <Link href="/student/interviews/interview">Create an Interview</Link>
           </Button>
         </div>
         <Image
@@ -67,7 +67,16 @@ const AiMockInterview = async () => {
         <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {hasFeaturedInterviews ? (
             featuredInterviews.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
+            <InterviewCard
+              key={interview.id}
+              userId={user?.data.id}
+              interviewId={interview.id}
+              role={interview.role}
+              type={interview.type}
+              techstack={interview.techstack}
+              createdAt={interview.createdAt}
+              coverImage={interview.coverImage}
+            />
             ))
           ) : (
             <p className="text-muted-foreground">There are no interviews available.</p>

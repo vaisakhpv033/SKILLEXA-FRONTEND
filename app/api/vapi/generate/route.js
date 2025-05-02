@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 import { db } from "@/lib/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { google } from "@ai-sdk/google";
