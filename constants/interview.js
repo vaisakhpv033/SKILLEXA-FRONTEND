@@ -19,6 +19,8 @@ export const mappings = {
   mongodb: "mongodb",
   mongo: "mongodb",
   mongoose: "mongoose",
+  python: "python",
+  django: "django",
   mysql: "mysql",
   postgresql: "postgresql",
   sqlite: "sqlite",

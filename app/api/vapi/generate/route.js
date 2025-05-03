@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 import { db } from "@/lib/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { google } from "@ai-sdk/google";
@@ -8,7 +11,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-    const { type, role, level, techstack, amount, userid } = await request.json();
+    const { type, role, level, techstack, amount=5, userid } = await request.json();
 
     try {
         const { text: questions } = await generateText({
@@ -18,7 +21,7 @@ export async function POST(request) {
                 The job experience level is ${level}.
                 The tech stack used in the job is: ${techstack}.
                 The focus between behavioural and technical questions should lean towards: ${type}.
-                The amount of questions required is: ${amount}.
+                The amount of questions required is: ${amount>10 ? 5 : amount}.
                 Please return only the questions, without any additional text.
                 The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
                 Return the questions formatted like this:
@@ -35,7 +38,8 @@ export async function POST(request) {
             userId: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            createdBy: "student",
         }
 
         await db.collection("interviews").add(interview);

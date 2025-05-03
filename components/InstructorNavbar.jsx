@@ -3,9 +3,16 @@ import React from 'react'
 import InstructorMobileNav from './InstructorMobileNav';
 import { SignOutButtonProvider } from './SignOutButton';
 import ModeToggle from './ModeToggle';
+import { getNotifications } from '@/lib/server/Notification';
+import { NotificationSheet } from './student/NotificationSheet';
 
 
-const InstructorNavbar = () => {
+const InstructorNavbar = async () => {
+    const {success, data, message} = await getNotifications();
+    let notifications = []
+    if (success){
+      notifications = data.results;
+    }  
   return (
     <nav className='flex-between fixed z-50 w-full bg-transparent border-2 backdrop-blur-lg px-1 py-1 lg:px-5'>
       <Link href='/instructor' className='flex items-center gap-1'>
@@ -15,6 +22,7 @@ const InstructorNavbar = () => {
         {/* profile picture */}
         <ModeToggle />
         <SignOutButtonProvider />
+        <NotificationSheet notifications={notifications} />
         <InstructorMobileNav />
         
 

@@ -18,6 +18,7 @@ import ErrorComponent from '@/components/ErrorComponent';
 import BasicInformation from './BasicInformation';
 import Publish from './Publish';
 import Curriculum from './Curriculum';
+import DiscussionSection from './courseDiscussion';
 
 const page = () => {
     const [activeTab, setActiveTab] = React.useState("basic");
@@ -67,8 +68,8 @@ const page = () => {
                             <BookCheck className="hidden md:block md:w-4 md:h-4 mr-2"/>Publish
                         </TabsTrigger>
 
-                        <TabsTrigger value="settings" className="text-[12px] md:text-sm ">
-                            <BarChart className="hidden md:block md:w-4 md:h-4 mr-2"/>Analytics
+                        <TabsTrigger value="discussion" className="text-[12px] md:text-sm ">
+                            <BarChart className="hidden md:block md:w-4 md:h-4 mr-2"/>Discussion
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>
@@ -83,6 +84,9 @@ const page = () => {
                 {activeTab === "curriculum" && (
                     <Curriculum course={course} />
                 )}
+                {activeTab === "discussion" && (
+                    <DiscussionSection />
+                )}                
             </div>
 
         </section>

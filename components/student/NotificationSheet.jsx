@@ -1,4 +1,3 @@
-'use client'
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,120 +10,8 @@ import {
 } from "@/components/ui/sheet"
 import { ScrollArea } from "../ui/scroll-area"
 
-const notifications = [
-    {
-      id: 1,
-      notification: {
-        title: "New Message",
-        body: "You received a new message from John Doe."
-      },
-      is_read: false,
-      created_at: "2025-04-22T14:30:00"
-    },
-    {
-      id: 2,
-      notification: {
-        title: "Payment Successful",
-        body: "Your subscription payment for April has been processed."
-      },
-      is_read: true,
-      created_at: "2025-04-21T09:15:00"
-    },
-    {
-      id: 3,
-      notification: {
-        title: "New Comment",
-        body: "Anna commented on your post: 'Great insights!'"
-      },
-      is_read: false,
-      created_at: "2025-04-20T16:00:00"
-    },
-    {
-        id: 4,
-        notification: {
-          title: "New Message",
-          body: "You received a new message from John Doe."
-        },
-        is_read: false,
-        created_at: "2025-04-22T14:30:00"
-      },
-      
-      {
-        id: 5,
-        notification: {
-          title: "Payment Successful",
-          body: "Your subscription payment for April has been processed."
-        },
-        is_read: true,
-        created_at: "2025-04-21T09:15:00"
-      },
-      {
-        id: 6,
-        notification: {
-          title: "New Comment",
-          body: "Anna commented on your post: 'Great insights!'"
-        },
-        is_read: false,
-        created_at: "2025-04-20T16:00:00"
-      },
-      {
-        id: 7,
-        notification: {
-          title: "New Message",
-          body: "You received a new message from John Doe."
-        },
-        is_read: false,
-        created_at: "2025-04-22T14:30:00"
-      },
-      {
-        id: 8,
-        notification: {
-          title: "Payment Successful",
-          body: "Your subscription payment for April has been processed."
-        },
-        is_read: true,
-        created_at: "2025-04-21T09:15:00"
-      },
-      {
-        id: 9,
-        notification: {
-          title: "New Comment",
-          body: "Anna commented on your post: 'Great insights!'"
-        },
-        is_read: false,
-        created_at: "2025-04-20T16:00:00"
-      },
-      {
-          id: 10,
-          notification: {
-            title: "New Message",
-            body: "You received a new message from John Doe."
-          },
-          is_read: false,
-          created_at: "2025-04-22T14:30:00"
-        },
-        
-        {
-          id: 11,
-          notification: {
-            title: "Payment Successful",
-            body: "Your subscription payment for April has been processed."
-          },
-          is_read: true,
-          created_at: "2025-04-21T09:15:00"
-        },
-        {
-          id: 12,
-          notification: {
-            title: "New Comment",
-            body: "Anna commented on your post: 'Great insights!'"
-          },
-          is_read: false,
-          created_at: "2025-04-20T16:00:00"
-        },
-  ]
+export async function NotificationSheet({notifications}) {
 
-export function NotificationSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
