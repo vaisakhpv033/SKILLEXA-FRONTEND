@@ -12,9 +12,14 @@ import Link from "next/link";
 import ModeToggle from "@/components/ModeToggle";
 import { Bell, BookOpen, Heart, ShoppingCart } from "lucide-react";
 import { NotificationSheet } from "@/components/student/NotificationSheet";
+import { getNotifications } from "@/lib/server/Notification";
 
-const AdminLayout = ({ children }) => {
-
+const AdminLayout = async ({ children }) => {
+    const {success, data, message} = await getNotifications();
+    let notifications = []
+    if (success){
+      notifications = data.results;
+    }
     return (
             <SidebarProvider>
                 <StudentSidebar />
@@ -37,7 +42,7 @@ const AdminLayout = ({ children }) => {
                             </Link>
                             <Separator orientation="vertical" className="mr-2 h-4" />
                                 
-                            <NotificationSheet />
+                            <NotificationSheet notifications={notifications}/>
                             
                             <Separator orientation="vertical" className="mr-2 h-4" />
                             <ModeToggle />
