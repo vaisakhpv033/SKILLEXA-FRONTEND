@@ -2,10 +2,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import AnimatedButton from "./AnimatedButton";
 
 const Hero = () => {
   return (
-    <section className="container px-4 py-16 sm:px-8 md:py-20">
+    <section className="container px-4 py-16 sm:px-8 lg:px-10 xl:px-12 md:py-20">
       <div className="grid gap-8 lg:grid-cols-2 items-center">
         {/* Left Content */}
         <div className="flex flex-col justify-center space-y-6">
@@ -17,12 +19,7 @@ const Hero = () => {
             Master web development, cybersecurity, data science, cloud computing, and more. 
             Practice with AI-driven mock interviews and get instant feedback to advance your career.
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row">
-
-            <Button size="lg" className="w-full sm:w-auto">
-              Start Learning
-            </Button>
-          </div>
+            <AnimatedButton redirectLink="/login" buttonText="Start Learning" />
         </div>
 
         {/* Right Image */}
