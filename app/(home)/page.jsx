@@ -1,39 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
+import Hero from "@/components/Hero";
+
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       {/* Hero Section */}
-      <section className="container px-4 py-16 sm:px-8 md:py-16">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="flex flex-col justify-center space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Learn from experts.<br />
-              <span className="text-primary">Advance your career.</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Access over 100,000 online courses from top instructors around the world. Learn at your own pace and earn certificates.
-            </p>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Input placeholder="What do you want to learn?" className="max-w-sm" />
-              <Button size="lg">Start Learning</Button>
-            </div>
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src="/images/home-image.avif"
-              alt="Students learning"
-              width={500}
-              height={300}
-              size="100vw"
-              className="rounded-lg object-cover w-full h-auto"
-              priority
-            />
-          </div>
-        </div>
-      </section>
+        <Hero />
 
       {/* Stats Section */}
       <section className="border-y bg-muted/50">

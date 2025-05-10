@@ -17,7 +17,7 @@ export async function authMiddleware(req) {
     // Get the user's token
     const token = await getToken({ req });
     //console.log("token:",token);
-    const { pathname } = req.nextUrl;
+    const { pathname, search } = req.nextUrl;
 
 
     // Allow public access to landing page (`/`)
@@ -43,7 +43,10 @@ export async function authMiddleware(req) {
 
     // If user is not logged in and tries to access a protected route, redirect to login
     if (!token?.user?.user?.role && Object.values(protectedRoutes).some((route) => pathname.startsWith(route))) {
-        return NextResponse.redirect(new URL("/login", req.url));
+        const originalPath = pathname + search;
+        const loginUrl = new URL("/login", req.url);
+        loginUrl.searchParams.set("redirect", originalPath);
+        return NextResponse.redirect(loginUrl);
     }
 
     // Role-based route protection

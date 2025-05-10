@@ -1,13 +1,9 @@
 'use client';
 
 import React from 'react';
-import { courseFallbackImgUrl } from '@/constants';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
+
 import { CheckCircle, Globe, GraduationCap, Users, ListChecks, ShoppingCart } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+
 
 const LANGUAGES = {
     EN: "English",

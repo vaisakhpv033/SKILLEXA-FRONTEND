@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useCourse } from '@/app/instructor/course/useCourse';
 import { CourseCard } from '@/components/student/CourseCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LEVELS, CourseLevels } from '@/constants'; // Assuming you store them here
+import { LEVELS, CourseLevels } from '@/constants'; 
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
