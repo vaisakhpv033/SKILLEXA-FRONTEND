@@ -1,0 +1,23 @@
+{
+    "name": "Skillexa",
+    "short_name": "Skillexa",
+    "description": "Technical e-learning platform with AI-driven mock interviews.",
+    "lang": "en-US",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#0f172a",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/icons/icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
