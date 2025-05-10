@@ -18,7 +18,7 @@ import {
     Plus, PenLine, Trash2, SquarePlus,
     FileText, Video,
     PencilIcon,
-    Loader2
+    Loader2, File
 } from "lucide-react";
 import { createLesson, updateLesson, deleteLesson } from '@/lib/client/instructorCurriculum';
 import { toast } from 'sonner';
@@ -229,6 +229,7 @@ export function DeleteLesson({lesson, mutate}) {
 export function LessonData({ lesson, mutate, course }) {
     const [showContentModal, setShowContentModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
+    const [showDocumentModal, setShowDocumentModal] = useState(false);
     const [showOptionsDialog, setShowOptionsDialog] = useState(false);
     const [showLessonModal, setShowLessonModal] = useState(false);
     const [isEditing, setIsEdititng] = useState(false);
@@ -257,18 +258,20 @@ export function LessonData({ lesson, mutate, course }) {
     };
 
     const handleLessonClick = () => {
-        if (lesson.video_url || lesson.content) {
+        if (lesson.video_url || lesson.content || lesson.document_url) {
             setShowLessonModal(true);
         }
     };
 
     return (
         <div className="relative flex items-start gap-3">
-            {(lesson.video_url || lesson.content) ? (
+            {(lesson.video_url || lesson.content || lesson.document_url) ? (
                 <div onClick={handleLessonClick} className="cursor-pointer">
                     {lesson.video_url ? (
                         <Video className="text-violet-600 hover:text-violet-800 mt-1" />
-                    ) : (
+                    ) : lesson.document_url ? (
+                        <File className="text-violet-600 hover:text-violet-800 mt-1" />
+                    ):(
                         <FileText className="text-violet-600 hover:text-violet-800 mt-1" />
                     )}
                 </div>
@@ -304,6 +307,20 @@ export function LessonData({ lesson, mutate, course }) {
                                 <FileText className="w-4 h-4" />
                                 Add Text
                             </button>
+
+                            <button
+                                className="flex items-center gap-2 text-sm hover:bg-gray-100 p-2 rounded"
+                                onClick={() => {
+                                    setShowOptionsDialog(false);
+                                    setShowContentModal(false);
+                                    setShowVideoModal(false);
+                                    setShowDocumentModal(true);
+                                }}
+                            >
+                                <File className="w-4 h-4" />
+                                Add Document
+                            </button>
+
                         </div>
                     </DialogContent>
                 </Dialog>
@@ -331,6 +348,18 @@ export function LessonData({ lesson, mutate, course }) {
                                 </Button>   
                                 )
                             }
+                            {lesson?.document_url && (
+                                <Button variant='outline' 
+                                    onClick={() => {
+                                        setShowLessonModal(false);
+                                        setShowDocumentModal(true);
+                                    }}
+                                >
+                                    Upload
+                                </Button>   
+                                )
+                            }
+                            
                         </DialogTitle>
                         
                     </DialogHeader>
@@ -358,12 +387,29 @@ export function LessonData({ lesson, mutate, course }) {
                     ):(
 
                         <div className="mt-4">
-                            {lesson.video_url ? (
+                            {lesson.video_url && (
                                 <video controls className="w-full rounded">
                                     <source src={lesson.video_url} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
-                            ) : (
+                            )}
+                            {lesson.document_url && (
+                                <div className="flex items-center justify-between p-3 bg-gray-100 rounded-md">
+                                    <span className="text-sm text-gray-700 truncate">
+                                        📄 Document available
+                                    </span>
+                                    <a
+                                        href={lesson.document_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline text-sm font-medium"
+                                        download
+                                    >
+                                        Download
+                                    </a>
+                                </div>
+                            )} 
+                            {lesson.content && (
                                 <div className=" text-md whitespace-pre-line  ">
                                     <ScrollArea className="h-[300px]">{lesson.content || "No content available for this lesson."}</ScrollArea>
                                 </div>
@@ -393,6 +439,17 @@ export function LessonData({ lesson, mutate, course }) {
                     course={course}
                 />
             )}
+
+            {showDocumentModal && (
+                <AddDocumentContentModal
+                    open={showDocumentModal}
+                    onClose={() => setShowDocumentModal(false)}
+                    lesson={lesson}
+                    mutate={mutate}
+                    course={course}
+                />
+            )}
+
         </div>
     );
 }
@@ -547,6 +604,113 @@ export function AddVideoContentModal({ open, onClose, lesson, mutate, course }) 
                         className="w-full"
                     >
                         {isUploading ? "Uploading..." : "Upload Video"}
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+
+export function AddDocumentContentModal({ open, onClose, lesson, mutate, course }) {
+    const [file, setFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const allowedTypes = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "text/plain"
+    ];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    const handleFileChange = (e) => {
+        const selected = e.target.files[0];
+        if (selected) {
+            setFile(selected);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!file) return;
+
+        if (!allowedTypes.includes(file.type)) {
+            toast.error("Invalid file type. Upload PDF, DOCX, XLSX, or TXT.");
+            return;
+        }
+
+        if (file.size > maxSize) {
+            toast.error("File size must be less than 10MB.");
+            return;
+        }
+
+        setIsUploading(true);
+
+        try {
+            const signedUrlRes = await fetch(`/api/instructor/course/lesson/video?course=${course}&section=${lesson.section}&lesson=${lesson.id}`);
+            const signedUrlData = await signedUrlRes.json();
+
+            if (!signedUrlRes.ok) throw new Error(signedUrlData.error || "Failed to get signed URL");
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("api_key", signedUrlData.apiKey);
+            formData.append("timestamp", signedUrlData.timestamp);
+            formData.append("signature", signedUrlData.signature);
+            formData.append("folder", signedUrlData.folder);
+            formData.append("resource_type", "auto");
+
+
+            const uploadRes = await fetch(
+                `https://api.cloudinary.com/v1_1/${signedUrlData.cloudName}/raw/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            const uploadData = await uploadRes.json();
+            if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload failed");
+
+            const fileUrl = uploadData.secure_url;
+
+            const response = await updateLesson({ document_url: fileUrl }, lesson.id);
+
+            if (response.status == true) {
+                toast.success("Document added successfully.");
+                mutate();
+                onClose();
+            } else {
+                toast.error(response?.result || "Update failed.");
+            }
+        } catch (err) {
+            toast.error(err.message || "Upload failed.");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="max-w-xl">
+                <DialogHeader>
+                    <DialogTitle>Upload a Document for {lesson.title}</DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-4 mt-2">
+                    <input
+                        type="file"
+                        accept=".pdf,.docx,.xlsx,.txt"
+                        onChange={handleFileChange}
+                        className="block w-full text-sm"
+                    />
+
+                    <Button
+                        onClick={handleUpload}
+                        disabled={!file || isUploading}
+                        className="w-full"
+                    >
+                        {isUploading ? "Uploading..." : "Upload Document"}
                     </Button>
                 </div>
             </DialogContent>

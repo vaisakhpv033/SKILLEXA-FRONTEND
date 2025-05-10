@@ -1,11 +1,12 @@
 'use client';
 import React from 'react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { PlayCircle, FileText, XCircle } from 'lucide-react';
+import { PlayCircle, FileText, XCircle, File } from 'lucide-react';
 
 const getLessonIcon = (lesson) => {
   if (lesson.video_url) return <PlayCircle className="w-4 h-4 text-violet-500" />;
   if (lesson.content) return <FileText className="w-4 h-4 text-green-500" />;
+  if (lesson.document_url) return <File className="w-4 h-4 text-green-500" />;
   return <XCircle className="w-4 h-4 text-gray-400" />;
 };
 
