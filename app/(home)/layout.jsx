@@ -8,7 +8,7 @@ const HomeLayout = ({children}) => {
     <main className='relative'>
         <Navbar navbarLinks={navbarLinks}/>
         <div className='flex'>
-            <section className='flex min-h-screen flex-1 flex-col px-6 pb-6 pt-20 max-md:pb-8 sm:px-14'>
+            <section className='flex min-h-screen flex-1 flex-col'>
                 <div className='w-full'>
                     {children}
                 </div>

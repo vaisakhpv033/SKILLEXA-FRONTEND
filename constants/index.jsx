@@ -1,29 +1,20 @@
-import { BookOpen, LayoutDashboard, Settings2, Plus, Bot } from "lucide-react"
+import { BookOpen, LayoutDashboard, Settings2, UserPlus, Bot, LogIn } from "lucide-react"
 export const navbarLinks = [
     {
-        title: 'Home',
-        route: '/',
-        imgUrl: '/icons/Home.svg'
-    },
-    {
-        title: 'Instructor',
-        route: '/register/instructor',
-        imgUrl: '/icons/instructor.svg',
-    },
-    {
-        title: 'Courses',
-        route: '/courses',
-        imgUrl: '/icons/courses.svg',
+        title: 'Interview',
+        route: '/student/interviews',
+        imgUrl: <Bot />
+
     },
     {
         title: 'Login',
         route: '/login',
-        imgUrl: '/icons/login.svg',
+        imgUrl: <LogIn />,
     },
     {
         title: 'Sign up',
         route: '/register/student',
-        imgUrl: '/icons/signup.svg',
+        imgUrl: <UserPlus />,
     },
 ]
 
@@ -93,6 +84,36 @@ export const sidebarLinks = [
         imgUrl: '/icons/settings.svg',
     }
 ]
+
+
+export const faqs = [
+    {
+      question: "What is Skillexa?",
+      answer:
+        "Skillexa is an e-learning platform offering expert-led courses in web development, cybersecurity, data science, cloud computing, and more. It also provides AI-driven mock interviews to help you prepare for real-world job interviews."
+    },
+    {
+      question: "How does the AI mock interview work?",
+      answer:
+        "Our AI mock interviews simulate real-world interview scenarios via voice calls. You’ll receive instant feedback on your performance, helping you improve your skills and confidence."
+    },
+    {
+      question: "Can I become an instructor on Skillexa?",
+      answer:
+        "Yes! Skillexa allows experts to create and share courses. You can register as an instructor, create courses, and earn money by sharing your knowledge."
+    },
+    {
+      question: "What types of courses are available?",
+      answer:
+        "We offer courses in web development, cybersecurity, data science, mobile development, cloud computing, machine learning, and more. Our courses are designed to help you upskill and advance your career."
+    },
+    {
+      question: "Is there a free trial available?",
+      answer:
+        "Yes, Skillexa offers a free trial for selected courses. You can explore the platform and decide if it’s the right fit for your learning needs."
+    }
+];
+
 
 
 // course related 

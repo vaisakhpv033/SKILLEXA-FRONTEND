@@ -39,9 +39,9 @@ const NavbarContent = ({navbarLinks}) => {
     if (role === 3) dashboardRoute = "/admin";
 
   return (
-    <nav className='flex-between fixed z-50 w-full px-6 py-2 lg:px-10 bg-dark-3 dark:bg-transparent shadow-lg  backdrop-blur-[8px]'>
+    <nav className='flex-between fixed z-50 w-full px-6  lg:px-10 dark:bg-transparent shadow-lg  backdrop-blur-[8px]'>
         <Link href={dashboardRoute} className='flex items-center'>
-            <p className='text-white text-[26px] font-extrabold'>SKILLEXA</p>
+            <p className='text-violet-800 text-[26px] font-extrabold'>SKILLEXA</p>
         </Link>
         <div className='flex-between gap-10 max-lg:hidden'>
             {navbarLinks.map((link) => {
@@ -49,11 +49,12 @@ const NavbarContent = ({navbarLinks}) => {
                 return (
                     <Link href={link.route} key={link.title} className={
                         cn(
-                            'flex gap-4 items-center p-4 rounded-lg justify-start text-white hover:text-[#00FFF0]', 
-                            {'text-[#00FFF0]': isActive,}
+                            'flex gap-2 items-center p-3 rounded-lg text-black/75 dark:text-white/75 justify-start dark:hover:text-violet-500 hover:text-violet-500', 
+                            {'text-violet-500': isActive,}
                         )
                     }>
-                        <p className='text-lg font-semibold'>
+                        {link.imgUrl}
+                        <p className='text-md font-semibold'>
                             {link.title}
                         </p>
 

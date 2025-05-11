@@ -148,6 +148,7 @@ export const authOptions = {
 
     async redirect({ url, baseUrl}) {
       // Get user role from session
+      
       const role = url?.includes("student")
         ? "student"
         : url?.includes("instructor")

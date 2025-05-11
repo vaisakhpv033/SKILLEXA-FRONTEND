@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
+
 
 
 export default function Login() {
@@ -15,6 +16,10 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = decodeURIComponent(searchParams.get("redirect") || "");
+  console.log("redirecct",redirect)
+
 
   // login function logic here
   const handleSubmit = async (e) => {
@@ -47,31 +52,42 @@ export default function Login() {
       password,
       redirect: false,
     });
-    setIsSubmitting(false);
+
     
     if (res.error) {
       toast.error("Invalid Credentials")
+      setIsSubmitting(false);
       return;
     }
     toast.success("Login successfull")
-    // Redirect user based on role
+    // Fetch session to determine role
     const sessionRes = await fetch("/api/auth/session");
     const session = await sessionRes.json();
+    const role = session?.user?.user?.role;
 
-    if (session?.user?.user.role === 1) {
-      router.push("/student");
-    } else if (session?.user?.user.role === 2) {
-      router.push("/instructor");
-    } else if (session?.user?.user.role === 3) {
-      router.push("/admin");
-    } else {
-      router.push("/"); 
+    //  Handle redirects with early return
+    if (role === 1) {
+      if (redirect && redirect.startsWith("/student")) {
+        return router.push(redirect);
+      }
+      return router.push("/student");
     }
+
+    if (role === 2) {
+      return router.push("/instructor");
+    }
+
+    if (role === 3) {
+      return router.push("/admin");
+    }
+
+    setIsSubmitting(false);
+    return router.push("/");
 
   };
 
   return (
-    <div className=" flex items-center justify-center p-4">
+    <div className=" flex items-center justify-center  p-4 pt-20">
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-[#0f0d23] rounded-2xl shadow-xl overflow-hidden">
           <div className="relative h-36 skillexa-gradient p-8">

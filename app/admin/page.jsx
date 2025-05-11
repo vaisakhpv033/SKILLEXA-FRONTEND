@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ErrorComponent from "@/components/ErrorComponent";
 import { getAdminDashboardData, getAdminOrderRevenueData } from "@/lib/server/adminDashboard"
 import AdminDashboard from "@/components/admin/AdminDashboard";

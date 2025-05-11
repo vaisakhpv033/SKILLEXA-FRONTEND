@@ -1,62 +1,29 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
+import Hero from "@/app/(home)/sections/Hero";
+import Stats from "./sections/Stats";
+import Footer from "./sections/Footer";
+import BecameInstructor from "./sections/BecameInstructor";
+import FAQ from "./sections/FAQ";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       {/* Hero Section */}
-      <section className="container px-4 py-16 sm:px-8 md:py-16">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="flex flex-col justify-center space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Learn from experts.<br />
-              <span className="text-primary">Advance your career.</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Access over 100,000 online courses from top instructors around the world. Learn at your own pace and earn certificates.
-            </p>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Input placeholder="What do you want to learn?" className="max-w-sm" />
-              <Button size="lg">Start Learning</Button>
-            </div>
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src="/images/home-image.avif"
-              alt="Students learning"
-              width={500}
-              height={300}
-              size="100vw"
-              className="rounded-lg object-cover w-full h-auto"
-              priority
-            />
-          </div>
-        </div>
-      </section>
+        <Hero />
 
       {/* Stats Section */}
-      <section className="border-y bg-muted/50">
-        <div className="container grid grid-cols-2 gap-4 px-4 py-12 md:grid-cols-4 sm:px-8">
-          <div className="text-center">
-            <div className="text-3xl font-bold">15M+</div>
-            <div className="text-muted-foreground">Students</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">100K+</div>
-            <div className="text-muted-foreground">Courses</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">50K+</div>
-            <div className="text-muted-foreground">Instructors</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">4.8/5</div>
-            <div className="text-muted-foreground">Rating</div>
-          </div>
-        </div>
-      </section>
+        <Stats />
 
+      {/* Course Section */}
+
+
+      {/* Become an Instructor Section */}
+      <BecameInstructor />
+
+      {/* FAQ section */}
+      <FAQ />
+
+      {/* Footer Section */}
+      <Footer />
     </div>
   );
 }
