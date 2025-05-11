@@ -1,5 +1,8 @@
-import Hero from "@/components/Hero";
-
+import Hero from "@/app/(home)/sections/Hero";
+import Stats from "./sections/Stats";
+import Footer from "./sections/Footer";
+import BecameInstructor from "./sections/BecameInstructor";
+import FAQ from "./sections/FAQ";
 
 export default function Home() {
   return (
@@ -8,27 +11,19 @@ export default function Home() {
         <Hero />
 
       {/* Stats Section */}
-      <section className="border-y bg-muted/50">
-        <div className="container grid grid-cols-2 gap-4 px-4 py-12 md:grid-cols-4 sm:px-8">
-          <div className="text-center">
-            <div className="text-3xl font-bold">15M+</div>
-            <div className="text-muted-foreground">Students</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">100K+</div>
-            <div className="text-muted-foreground">Courses</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">50K+</div>
-            <div className="text-muted-foreground">Instructors</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">4.8/5</div>
-            <div className="text-muted-foreground">Rating</div>
-          </div>
-        </div>
-      </section>
+        <Stats />
 
+      {/* Course Section */}
+
+
+      {/* Become an Instructor Section */}
+      <BecameInstructor />
+
+      {/* FAQ section */}
+      <FAQ />
+
+      {/* Footer Section */}
+      <Footer />
     </div>
   );
 }

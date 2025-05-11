@@ -3,6 +3,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
+import Image from 'next/image';
 
 const AnimatedButton = ({buttonText, handleClick, redirectLink}) => {
     const router = useRouter();
@@ -22,3 +23,24 @@ const AnimatedButton = ({buttonText, handleClick, redirectLink}) => {
 }
 
 export default AnimatedButton
+
+
+export const AnimatedImage = ({imgUrl, altText}) => {
+    return (
+        <motion.div
+            
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+        >
+            <Image
+                src={imgUrl}
+                alt={altText || "image"}
+                width={600}
+                height={400}
+                className="rounded-lg object-cover w-full h-auto"
+                priority
+            />
+        </motion.div>
+    )
+}

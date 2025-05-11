@@ -3,8 +3,8 @@ import { UserPlus } from 'lucide-react';
 
 const studentRegisterLayout = ({children}) => {
   return (
-    <main>
-        <div className="flex items-center justify-center p-4">
+    <main className='pt-10'>
+        <div className="flex items-center justify-center p-3">
       <div className="w-full max-w-5xl">
         <div className="bg-white dark:bg-[#0f0d23] rounded-2xl shadow-xl overflow-hidden">
           <div className="relative h-36 skillexa-gradient p-8">

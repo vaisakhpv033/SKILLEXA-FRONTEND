@@ -87,7 +87,7 @@ export default function Login() {
   };
 
   return (
-    <div className=" flex items-center justify-center p-4">
+    <div className=" flex items-center justify-center  p-4 pt-20">
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-[#0f0d23] rounded-2xl shadow-xl overflow-hidden">
           <div className="relative h-36 skillexa-gradient p-8">
