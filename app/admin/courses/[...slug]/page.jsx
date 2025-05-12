@@ -25,6 +25,7 @@ import { CheckCircle, Globe, GraduationCap, Users, ListChecks, ShoppingCart } fr
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { CourseStatusLabel } from '@/constants';
+import PublicCurriculum from '@/app/student/(section)/course/[...slug]/PublicCurriculum';
 
 
 const LANGUAGES = {
@@ -171,6 +172,9 @@ const page = () => {
             <div className='mt-4'>
                 {activeTab === "basic" && (
                     <BasicInformation course={course}  mutate={mutate} />
+                )}
+                {activeTab === "curriculum" && (
+                    <PublicCurriculum course={course} />
                 )}
             </div>
 
