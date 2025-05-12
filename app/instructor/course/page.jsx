@@ -7,7 +7,7 @@ const MyCourses = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl lg:text-4xl font-bold max-sm:text-2xl">
-            My Courses
+            My Course
           </h1>
           <p className="text-muted-foreground mt-2">Manage and track your course portfolio</p>
         </div>
