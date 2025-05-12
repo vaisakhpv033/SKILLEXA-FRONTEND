@@ -10,7 +10,7 @@ export default async function MyLearning() {
     return (
       <div className="w-full max-w-7xl mx-auto px-2 md:py-6 lg:py-8 sm:px-2 lg:px-4 gap-4">
         <h1 className='text-3xl lg:text-4xl font-bold max-sm:text-2xl'>
-          No Enrolled Courses
+          No Courses added to wishlist
         </h1>
       </div>
     )

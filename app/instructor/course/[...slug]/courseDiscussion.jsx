@@ -33,7 +33,21 @@ const DiscussionSection = () => {
   
     if (isLoading) return <div>Loading messages...</div>;
     if (isError) return <div>Failed to load messages. Please try again later.</div>;
-    if (!result || result.length === 0) return <div>No messages available yet.</div>;
+    if (!result || result.length === 0) return (
+      <div>
+          <h1 className='font-bold'>No messages available yet.</h1>
+        <div className='flex justify-between p-2 text-lg'>
+          <AddModal
+            open={isModalOpen}
+            setOpen={setModalOpen}
+            title="Add Comment"
+            placeholder="Enter your comment"
+            buttonText="Submit"
+            onSubmit={handleSubmit}
+            triggerText='Add message'
+          />
+        </div>
+      </div>);
   return (
     <div>
         <div className='flex justify-between p-2 text-lg'>
