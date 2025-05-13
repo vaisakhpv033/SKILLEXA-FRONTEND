@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const SITE_BASE_URL = process.env.NEXT_PUBLIC_SITE_BASE_URL || "http://127.0.0.1:3000";
 
@@ -97,7 +98,7 @@ export default function RootLayout({ children }) {
           {children}
         </ThemeProvider>
         <Toaster expand={true} richColors={true} closeButton={true}/>
-        
+        <SpeedInsights />
       </body>
     </html>
   );
